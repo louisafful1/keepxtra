@@ -67,7 +67,6 @@ export default {
         'gradient-hero': 'linear-gradient(135deg, #ECFDF5 0%, #FFFFFF 60%, #FFF7ED 100%)',
         'gradient-soft-green': 'linear-gradient(135deg, #DCFCE7 0%, #FFFFFF 60%)',
         'gradient-soft-orange': 'linear-gradient(135deg, #FFF7ED 0%, #FFFFFF 60%)',
-        'gradient-brand': 'linear-gradient(135deg, #15803D 0%, #16A34A 45%, #F97316 100%)',
       },
       animation: {
         marquee: 'marquee 32s linear infinite',

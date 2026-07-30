@@ -39,7 +39,12 @@ export function ProblemStats() {
       <Container>
         <SectionHeading
           eyebrow="The Problem"
-          title="Every year, Africa loses what it can&apos;t afford to waste."
+          title={
+            <>
+              Every year, Africa loses what it can&apos;t afford to{' '}
+              <span className="text-primary-500">waste.</span>
+            </>
+          }
           description="Poor storage and fragmented distribution mean fresh produce rarely makes it from farm to buyer intact — and everyone in the chain pays for it."
         />
 

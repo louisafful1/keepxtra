@@ -19,9 +19,9 @@ export function FinalCta() {
         >
           <motion.h2
             variants={fadeUp}
-            className="text-balance font-display text-4xl font-medium leading-[1.1] text-neutral-900 sm:text-6xl"
+            className="text-balance font-display text-4xl font-medium leading-[1.1] text-primary-800 sm:text-6xl"
           >
-            Ready to transform the future of food distribution?
+            Ready to transform the future of <span className="text-primary-500">food distribution?</span>
           </motion.h2>
           <motion.p variants={fadeUp} className="text-lg text-neutral-600">
             Partner with KeepXtra today — and help build the infrastructure powering

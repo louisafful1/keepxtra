@@ -1,0 +1,12 @@
+{
+  "name": "keepxtra-pitch-deck",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Generates KeepXtra-Pitch-Deck.pdf from generate-pitch-deck.js",
+  "scripts": {
+    "build": "node generate-pitch-deck.js"
+  },
+  "dependencies": {
+    "pdfkit": "^0.19.1"
+  }
+}

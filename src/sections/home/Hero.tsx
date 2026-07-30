@@ -55,12 +55,12 @@ export function Hero() {
             <Badge>Post-Harvest Logistics Infrastructure</Badge>
           </div>
 
-          <h1 className="text-balance font-display text-5xl font-medium leading-[1.05] tracking-tight text-neutral-900 sm:text-6xl lg:text-[4rem]">
+          <h1 className="text-balance font-display text-5xl font-medium leading-[1.05] tracking-tight text-primary-800 sm:text-6xl lg:text-[4rem]">
             <span className="block overflow-hidden">
               <span className="hero-line block">Reducing Food Waste.</span>
             </span>
             <span className="block overflow-hidden">
-              <span className="hero-line block text-gradient-brand">Powering Africa&apos;s</span>
+              <span className="hero-line block text-primary-500">Powering Africa&apos;s</span>
             </span>
             <span className="block overflow-hidden">
               <span className="hero-line block">Fresh Produce Supply Chain.</span>

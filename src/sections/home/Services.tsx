@@ -12,7 +12,11 @@ export function Services() {
       <Container>
         <SectionHeading
           eyebrow="What We Do"
-          title="End-to-end infrastructure for fresh produce."
+          title={
+            <>
+              End-to-end infrastructure for <span className="text-primary-500">fresh produce.</span>
+            </>
+          }
           description="Every layer a food supply chain needs — built, operated, and optimized by KeepXtra."
         />
 

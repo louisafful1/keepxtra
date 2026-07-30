@@ -11,7 +11,11 @@ export function WhoWeServe() {
       <Container>
         <SectionHeading
           eyebrow="Who We Serve"
-          title="One network, every point of the food chain."
+          title={
+            <>
+              One network, every point of the <span className="text-primary-500">food chain.</span>
+            </>
+          }
           description="From the farm gate to the family table, KeepXtra connects everyone who grows, sells, or serves fresh produce."
         />
 

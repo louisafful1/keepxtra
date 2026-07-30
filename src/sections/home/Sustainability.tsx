@@ -67,9 +67,9 @@ export function Sustainability() {
               </motion.div>
               <motion.h2
                 variants={fadeUp}
-                className="text-balance font-display text-4xl font-medium leading-[1.1] text-neutral-900 sm:text-5xl"
+                className="text-balance font-display text-4xl font-medium leading-[1.1] text-primary-800 sm:text-5xl"
               >
-                Impact that compounds beyond the balance sheet.
+                Impact that compounds beyond <span className="text-primary-500">the balance sheet.</span>
               </motion.h2>
               <motion.p variants={fadeUp} className="text-lg leading-relaxed text-neutral-500">
                 Every tonne of produce we save carries forward — into farmer livelihoods, food

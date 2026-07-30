@@ -50,9 +50,10 @@ export function InvestorHighlight() {
             </motion.div>
             <motion.h2
               variants={fadeUp}
-              className="text-balance font-display text-4xl font-medium leading-[1.1] text-neutral-900 sm:text-5xl"
+              className="text-balance font-display text-4xl font-medium leading-[1.1] text-primary-800 sm:text-5xl"
             >
-              Building the infrastructure layer for Africa&apos;s food economy.
+              Building the infrastructure layer for Africa&apos;s{' '}
+              <span className="text-primary-500">food economy.</span>
             </motion.h2>
             <motion.p variants={fadeUp} className="max-w-lg text-lg leading-relaxed text-neutral-500">
               KeepXtra sits at the intersection of logistics, food security, and technology —

@@ -43,7 +43,11 @@ export function WhyKeepXtra() {
       <Container>
         <SectionHeading
           eyebrow="Why KeepXtra"
-          title="A fundamentally better supply chain."
+          title={
+            <>
+              A fundamentally better <span className="text-primary-500">supply chain.</span>
+            </>
+          }
           description="We replace guesswork and spoilage with infrastructure, data, and accountability."
         />
 

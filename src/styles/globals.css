@@ -53,8 +53,13 @@
     text-wrap: balance;
   }
 
-  .text-gradient-brand {
-    @apply bg-gradient-brand bg-clip-text text-transparent;
+  .no-scrollbar {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
   }
 }
 

@@ -1,8 +1,9 @@
 import { Link } from 'react-router-dom'
-import { Sprout } from 'lucide-react'
+import { Sprout, Mail, Phone, MapPin } from 'lucide-react'
 import { Container } from '@/components/ui/Container'
 import { NewsletterForm } from '@/components/layout/NewsletterForm'
 import { footerLinkGroups, socialLinks } from '@/data/footerLinks'
+import { contactEmail, contactNumbers, officeAddress } from '@/data/contactInfo'
 
 export function Footer() {
   return (
@@ -11,7 +12,7 @@ export function Footer() {
         <div className="grid grid-cols-1 gap-16 lg:grid-cols-[1.4fr_2fr]">
           <div className="flex flex-col gap-6">
             <Link to="/" className="flex items-center gap-2.5">
-              <span className="flex size-9 items-center justify-center rounded-xl bg-gradient-brand shadow-glow">
+              <span className="flex size-9 items-center justify-center rounded-xl bg-primary-600 shadow-glow">
                 <Sprout className="size-5 text-white" strokeWidth={2} />
               </span>
               <span className="font-display text-lg font-semibold tracking-tight text-neutral-900">
@@ -23,6 +24,31 @@ export function Footer() {
               and powering Africa&apos;s fresh produce supply chain — from farm to
               storage to doorstep.
             </p>
+            <ul className="flex flex-col gap-2.5 text-sm text-neutral-600">
+              <li className="flex items-center gap-2.5">
+                <Mail className="size-4 shrink-0 text-primary-600" strokeWidth={1.75} />
+                <a href={`mailto:${contactEmail}`} className="transition-colors hover:text-neutral-900">
+                  {contactEmail}
+                </a>
+              </li>
+              <li className="flex items-center gap-2.5">
+                <Phone className="size-4 shrink-0 text-primary-600" strokeWidth={1.75} />
+                <span className="flex flex-wrap gap-x-2">
+                  {contactNumbers.map((number, i) => (
+                    <span key={number.label}>
+                      <a href={number.tel} className="transition-colors hover:text-neutral-900">
+                        {number.label}
+                      </a>
+                      {i < contactNumbers.length - 1 && <span className="text-neutral-300"> / </span>}
+                    </span>
+                  ))}
+                </span>
+              </li>
+              <li className="flex items-start gap-2.5">
+                <MapPin className="mt-0.5 size-4 shrink-0 text-primary-600" strokeWidth={1.75} />
+                <span>{officeAddress}</span>
+              </li>
+            </ul>
             <div>
               <p className="mb-3 text-sm font-medium text-neutral-700">
                 Get supply-chain insights in your inbox

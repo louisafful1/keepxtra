@@ -32,7 +32,11 @@ export function Testimonials() {
         <div className="flex flex-col items-start justify-between gap-8 sm:flex-row sm:items-end">
           <SectionHeading
             eyebrow="Testimonials"
-            title="Trusted by the people who feed a continent."
+            title={
+              <>
+                Trusted by the people who feed <span className="text-primary-500">a continent.</span>
+              </>
+            }
             className="mb-0"
           />
           <div className="flex shrink-0 gap-3">

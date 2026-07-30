@@ -16,7 +16,7 @@ interface StatProps {
 export function Stat({ value, suffix, prefix, decimals = 0, label, className, valueClassName }: StatProps) {
   return (
     <motion.div variants={fadeUp} className={cn('flex flex-col gap-2', className)}>
-      <div className={cn('font-display text-4xl font-medium tracking-tight text-neutral-900 sm:text-5xl', valueClassName)}>
+      <div className={cn('font-display text-4xl font-medium tracking-tight text-primary-800 sm:text-5xl', valueClassName)}>
         <CountUp
           end={value}
           duration={2.4}

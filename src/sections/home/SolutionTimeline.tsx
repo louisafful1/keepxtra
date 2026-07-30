@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react'
 import { gsap } from '@/animation/gsapConfig'
 import { useReducedMotion } from '@/hooks/useReducedMotion'
+import { useMediaQuery } from '@/hooks/useMediaQuery'
 import { solutionSteps } from '@/data/solutionSteps'
 import { Container } from '@/components/ui/Container'
 import { ScrollRevealWrapper } from '@/animation/ScrollRevealWrapper'
@@ -47,13 +48,15 @@ function StepCard({
 
 export function SolutionTimeline() {
   const reduced = useReducedMotion()
+  const isMobile = useMediaQuery('(max-width: 767px)')
+  const skipScrollJack = reduced || isMobile
   const containerRef = useRef<HTMLElement>(null)
   const trackRef = useRef<HTMLDivElement>(null)
   const cardRefs = useRef<(HTMLDivElement | null)[]>([])
   const progressRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    if (reduced || !containerRef.current || !trackRef.current) return
+    if (skipScrollJack || !containerRef.current || !trackRef.current) return
 
     const ctx = gsap.context(() => {
       const track = trackRef.current!
@@ -94,7 +97,7 @@ export function SolutionTimeline() {
     }, containerRef)
 
     return () => ctx.revert()
-  }, [reduced])
+  }, [skipScrollJack])
 
   if (reduced) {
     return (
@@ -104,8 +107,8 @@ export function SolutionTimeline() {
             <p className="text-xs font-medium uppercase tracking-widest text-primary-600">
               Our Solution
             </p>
-            <h2 className="mt-4 max-w-2xl text-balance font-display text-3xl font-medium leading-tight text-neutral-900 sm:text-4xl">
-              From farm to table, every step is engineered.
+            <h2 className="mt-4 max-w-2xl text-balance font-display text-3xl font-medium leading-tight text-primary-800 sm:text-4xl">
+              From farm to table, every step is <span className="text-primary-500">engineered.</span>
             </h2>
             <p className="mt-4 max-w-xl text-lg text-neutral-500">
               A single connected process replaces fragmented, informal supply chains.
@@ -132,6 +135,34 @@ export function SolutionTimeline() {
     )
   }
 
+  if (isMobile) {
+    return (
+      <section className="bg-neutral-50 py-20">
+        <Container>
+          <ScrollRevealWrapper>
+            <p className="text-xs font-medium uppercase tracking-widest text-primary-600">
+              Our Solution
+            </p>
+            <h2 className="mt-4 max-w-2xl text-balance font-display text-3xl font-medium leading-tight text-primary-800">
+              One connected process, from harvest to <span className="text-primary-500">doorstep.</span>
+            </h2>
+          </ScrollRevealWrapper>
+        </Container>
+
+        <div className="no-scrollbar mt-10 flex snap-x snap-mandatory gap-5 overflow-x-auto px-6 pb-4">
+          {solutionSteps.map((step, i) => (
+            <StepCard
+              key={step.title}
+              step={step}
+              index={i}
+              className="solution-card surface-card flex w-[78vw] shrink-0 snap-start flex-col justify-between rounded-3xl p-8 transition-all duration-500"
+            />
+          ))}
+        </div>
+      </section>
+    )
+  }
+
   return (
     <section ref={containerRef} className="relative bg-neutral-50">
       <div className="flex h-screen flex-col justify-center overflow-hidden py-16">
@@ -140,13 +171,13 @@ export function SolutionTimeline() {
             <p className="text-xs font-medium uppercase tracking-widest text-primary-600">
               Our Solution
             </p>
-            <h2 className="mt-4 max-w-2xl text-balance font-display text-3xl font-medium leading-tight text-neutral-900 sm:text-4xl">
-              One connected process, from harvest to doorstep.
+            <h2 className="mt-4 max-w-2xl text-balance font-display text-3xl font-medium leading-tight text-primary-800 sm:text-4xl">
+              One connected process, from harvest to <span className="text-primary-500">doorstep.</span>
             </h2>
           </ScrollRevealWrapper>
 
           <div className="mt-8 h-1 w-full max-w-md overflow-hidden rounded-full bg-neutral-200">
-            <div ref={progressRef} className="h-full w-0 rounded-full bg-gradient-brand" />
+            <div ref={progressRef} className="h-full w-0 rounded-full bg-primary-600" />
           </div>
         </Container>
 

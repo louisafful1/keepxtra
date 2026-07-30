@@ -23,9 +23,9 @@ export function ImpactCounters() {
             </motion.div>
             <motion.h2
               variants={fadeUp}
-              className="text-balance font-display text-4xl font-medium leading-tight text-neutral-900"
+              className="text-balance font-display text-4xl font-medium leading-tight text-primary-800"
             >
-              Measurable change, at scale.
+              Measurable change, <span className="text-primary-500">at scale.</span>
             </motion.h2>
             <motion.p variants={fadeUp} className="text-neutral-600">
               We&apos;re building a more efficient, sustainable, and inclusive food system
@@ -49,9 +49,9 @@ export function ImpactCounters() {
               const Icon = stat.icon
               return (
                 <motion.div key={stat.label} variants={fadeUp} className="flex flex-col items-start gap-3">
-                  <span className="flex size-11 items-center justify-center rounded-full bg-white shadow-soft">
+                  <span className="flex size-14 items-center justify-center rounded-full bg-white shadow-soft">
                     <Icon
-                      className={stat.accent ? 'size-5 text-secondary-500' : 'size-5 text-primary-600'}
+                      className={stat.accent ? 'size-7 text-secondary-500' : 'size-7 text-primary-600'}
                       strokeWidth={1.75}
                     />
                   </span>

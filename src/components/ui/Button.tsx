@@ -22,6 +22,7 @@ interface ButtonAsButton extends BaseProps, Omit<ButtonHTMLAttributes<HTMLButton
 interface ButtonAsLink extends BaseProps {
   to: string
   external?: boolean
+  download?: boolean | string
 }
 
 type ButtonProps = ButtonAsButton | ButtonAsLink
@@ -53,13 +54,14 @@ export function Button(props: ButtonProps) {
   )
 
   if ('to' in props && props.to) {
-    const { to, external } = props
+    const { to, external, download } = props
     if (external) {
       return (
         <motion.a
           href={to}
-          target="_blank"
-          rel="noopener noreferrer"
+          {...(download
+            ? { download: download === true ? '' : download }
+            : { target: '_blank', rel: 'noopener noreferrer' })}
           whileHover={{ scale: 1.03 }}
           whileTap={{ scale: 0.98 }}
           className={cn(classes, 'group')}
