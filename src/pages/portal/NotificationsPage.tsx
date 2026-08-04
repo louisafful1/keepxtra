@@ -1,14 +1,15 @@
 import { Helmet } from 'react-helmet-async'
-import { Bell, CheckCheck, CreditCard, PackageCheck, ShoppingBag, Truck } from 'lucide-react'
+import { Bell, CheckCheck, ClipboardCheck, CreditCard, PackageCheck, ShoppingBag, Truck } from 'lucide-react'
 import { buildSeo } from '@/lib/seo'
 import { PageHeader } from '@/components/portal/PageHeader'
 import { AsyncState } from '@/components/portal/AsyncState'
-import { useFarmerNotifications, useMarkNotificationRead } from '@/hooks/useFarmerQueries'
+import { useFarmerNotifications, useMarkAllNotificationsRead, useMarkNotificationRead } from '@/hooks/useFarmerQueries'
 import { formatDateTime } from '@/utils/format'
 import { cn } from '@/lib/cn'
 import type { NotificationType } from '@/types/farmer'
 
 const iconByType: Record<NotificationType, typeof Bell> = {
+  'storage-request': ClipboardCheck,
   pickup: Truck,
   inspection: PackageCheck,
   sale: ShoppingBag,
@@ -20,6 +21,8 @@ export default function NotificationsPage() {
   const seo = buildSeo({ title: 'Notifications', description: 'Pickups, inspections, sales, and payment updates.' })
   const { data, isLoading, isError } = useFarmerNotifications()
   const { mutate: markRead } = useMarkNotificationRead()
+  const { mutate: markAllRead, isPending: isMarkingAll } = useMarkAllNotificationsRead()
+  const hasUnread = Boolean(data?.some((n) => !n.read))
 
   return (
     <div className="flex flex-col gap-6">
@@ -27,7 +30,22 @@ export default function NotificationsPage() {
         <title>{seo.title}</title>
         <meta name="description" content={seo.description} />
       </Helmet>
-      <PageHeader title="Notifications" description="Updates on your pickups, produce, and payments." />
+      <PageHeader
+        title="Notifications"
+        description="Updates on your pickups, produce, and payments."
+        action={
+          hasUnread ? (
+            <button
+              type="button"
+              onClick={() => markAllRead()}
+              disabled={isMarkingAll}
+              className="rounded-full border border-neutral-200 px-4 py-2 text-sm font-medium text-neutral-600 hover:bg-neutral-50 disabled:opacity-50"
+            >
+              Mark all as read
+            </button>
+          ) : undefined
+        }
+      />
 
       <AsyncState isLoading={isLoading} isError={isError} errorMessage="Couldn't load notifications right now.">
         <div className="overflow-hidden rounded-2xl border border-neutral-200/70 bg-white shadow-soft">

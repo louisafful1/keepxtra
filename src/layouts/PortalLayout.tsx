@@ -13,6 +13,7 @@ import {
 } from 'lucide-react'
 import { PortalSidebar, type PortalNavItem } from '@/components/portal/PortalSidebar'
 import { PortalTopbar } from '@/components/portal/PortalTopbar'
+import { useFarmerNotifications } from '@/hooks/useFarmerQueries'
 
 const farmerNavItems: PortalNavItem[] = [
   { label: 'Dashboard', to: '/portal', icon: LayoutDashboard, end: true },
@@ -28,6 +29,8 @@ const farmerNavItems: PortalNavItem[] = [
 
 export function PortalLayout() {
   const [mobileOpen, setMobileOpen] = useState(false)
+  const { data: notifications } = useFarmerNotifications()
+  const unreadCount = notifications?.filter((n) => !n.read).length ?? 0
 
   return (
     <div className="flex min-h-screen bg-neutral-50">
@@ -38,7 +41,11 @@ export function PortalLayout() {
         onCloseMobile={() => setMobileOpen(false)}
       />
       <div className="flex min-w-0 flex-1 flex-col">
-        <PortalTopbar onOpenMobile={() => setMobileOpen(true)} />
+        <PortalTopbar
+          onOpenMobile={() => setMobileOpen(true)}
+          notificationCount={unreadCount}
+          notificationHref="/portal/notifications"
+        />
         <main className="flex-1 px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
           <div className="mx-auto max-w-7xl">
             <Outlet />

@@ -1,10 +1,16 @@
 import { useState } from 'react'
-import { ChevronDown, LogOut, Menu } from 'lucide-react'
-import { useNavigate } from 'react-router-dom'
+import { Bell, ChevronDown, LogOut, Menu } from 'lucide-react'
+import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '@/hooks/useAuth'
 import { cn } from '@/lib/cn'
 
-export function PortalTopbar({ onOpenMobile }: { onOpenMobile: () => void }) {
+interface PortalTopbarProps {
+  onOpenMobile: () => void
+  notificationCount?: number
+  notificationHref?: string
+}
+
+export function PortalTopbar({ onOpenMobile, notificationCount, notificationHref }: PortalTopbarProps) {
   const { user, logout } = useAuth()
   const navigate = useNavigate()
   const [menuOpen, setMenuOpen] = useState(false)
@@ -15,7 +21,7 @@ export function PortalTopbar({ onOpenMobile }: { onOpenMobile: () => void }) {
   }
 
   return (
-    <header className="sticky top-0 z-30 flex h-16 items-center justify-between border-b border-neutral-200 bg-white/90 px-4 backdrop-blur sm:px-6">
+    <header className="sticky top-0 z-30 flex h-16 items-center justify-between border-b border-neutral-200 bg-white/90 px-4 backdrop-blur print:hidden sm:px-6">
       <button
         type="button"
         onClick={onOpenMobile}
@@ -27,7 +33,23 @@ export function PortalTopbar({ onOpenMobile }: { onOpenMobile: () => void }) {
 
       <div className="hidden lg:block" />
 
-      <div className="relative">
+      <div className="flex items-center gap-2">
+        {notificationHref && (
+          <Link
+            to={notificationHref}
+            aria-label="Notifications"
+            className="relative flex size-9 items-center justify-center rounded-lg text-neutral-600 hover:bg-neutral-100"
+          >
+            <Bell className="size-[18px]" strokeWidth={1.75} />
+            {Boolean(notificationCount) && (
+              <span className="absolute right-1 top-1 flex size-4 items-center justify-center rounded-full bg-primary-500 text-[10px] font-semibold text-white">
+                {notificationCount! > 9 ? '9+' : notificationCount}
+              </span>
+            )}
+          </Link>
+        )}
+
+        <div className="relative">
         <button
           type="button"
           onClick={() => setMenuOpen((v) => !v)}
@@ -63,6 +85,7 @@ export function PortalTopbar({ onOpenMobile }: { onOpenMobile: () => void }) {
             </div>
           </>
         )}
+        </div>
       </div>
     </header>
   )

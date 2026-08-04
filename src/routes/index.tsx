@@ -34,9 +34,11 @@ const ProfilePage = lazy(() => import('@/pages/portal/ProfilePage'))
 // ---------- Admin dashboard ----------
 const AdminDashboardPage = lazy(() => import('@/pages/admin/DashboardPage'))
 const FarmersPage = lazy(() => import('@/pages/admin/FarmersPage'))
+const AdminStorageRequestsPage = lazy(() => import('@/pages/admin/StorageRequestsPage'))
 const InventoryPage = lazy(() => import('@/pages/admin/InventoryPage'))
 const WarehousesPage = lazy(() => import('@/pages/admin/WarehousesPage'))
 const AdminPickupRequestsPage = lazy(() => import('@/pages/admin/PickupRequestsPage'))
+const InspectionsPage = lazy(() => import('@/pages/admin/InspectionsPage'))
 const FleetPage = lazy(() => import('@/pages/admin/FleetPage'))
 const OrdersPage = lazy(() => import('@/pages/admin/OrdersPage'))
 const SalesPage = lazy(() => import('@/pages/admin/SalesPage'))
@@ -100,9 +102,11 @@ export const router = createBrowserRouter([
         children: [
           { index: true, element: lazyPage(<AdminDashboardPage />) },
           { path: 'farmers', element: lazyPage(<FarmersPage />) },
+          { path: 'storage-requests', element: lazyPage(<AdminStorageRequestsPage />) },
           { path: 'inventory', element: lazyPage(<InventoryPage />) },
           { path: 'warehouses', element: lazyPage(<WarehousesPage />) },
           { path: 'pickup-requests', element: lazyPage(<AdminPickupRequestsPage />) },
+          { path: 'inspections', element: lazyPage(<InspectionsPage />) },
           { path: 'fleet', element: lazyPage(<FleetPage />) },
           { path: 'orders', element: lazyPage(<OrdersPage />) },
           { path: 'sales', element: lazyPage(<SalesPage />) },

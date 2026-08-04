@@ -5,6 +5,7 @@ import { RouterProvider } from 'react-router-dom'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { router } from '@/routes'
 import { AuthProvider } from '@/contexts/AuthContext'
+import { ConfirmDialogProvider } from '@/components/portal/ConfirmDialog'
 import '@/styles/globals.css'
 
 const queryClient = new QueryClient({
@@ -22,7 +23,9 @@ createRoot(document.getElementById('root')!).render(
     <QueryClientProvider client={queryClient}>
       <HelmetProvider>
         <AuthProvider>
-          <RouterProvider router={router} />
+          <ConfirmDialogProvider>
+            <RouterProvider router={router} />
+          </ConfirmDialogProvider>
         </AuthProvider>
       </HelmetProvider>
     </QueryClientProvider>

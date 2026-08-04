@@ -1,4 +1,4 @@
-export type ProduceStatus = 'In Storage' | 'Reserved' | 'Sold' | 'Disposed'
+export type ProduceStatus = 'Pending Inspection' | 'In Storage' | 'Reserved' | 'Sold' | 'Disposed'
 
 export interface ProduceRecord {
   id: string
@@ -11,13 +11,7 @@ export interface ProduceRecord {
   status: ProduceStatus
 }
 
-export type PickupStatus =
-  | 'Pending'
-  | 'Approved'
-  | 'Vehicle Assigned'
-  | 'Driver En Route'
-  | 'Collected'
-  | 'Delivered to Warehouse'
+export type StorageRequestStatus = 'Pending' | 'Approved' | 'Rejected' | 'Info Requested'
 
 export interface StorageRequestInput {
   crop: string
@@ -28,12 +22,31 @@ export interface StorageRequestInput {
   notes?: string
 }
 
+export interface StorageRequest extends StorageRequestInput {
+  id: string
+  status: StorageRequestStatus
+  createdAt: string
+  reviewNotes?: string
+  linkedPickupRequestId?: string
+}
+
+export type PickupStatus =
+  | 'Pending'
+  | 'Approved'
+  | 'Driver Assigned'
+  | 'Driver En Route'
+  | 'Collected'
+  | 'Delivered to Warehouse'
+  | 'Completed'
+
 export interface PickupRequest {
   id: string
+  storageRequestId: string
   crop: string
   quantityKg: number
   pickupLocation: string
   preferredPickupDate: string
+  pickupDate?: string
   status: PickupStatus
   driverName?: string
   vehiclePlate?: string
@@ -41,6 +54,7 @@ export interface PickupRequest {
   createdAt: string
 }
 
+/** Payment status of an individual sale transaction (distinct from payout status). */
 export type PaymentStatus = 'Paid' | 'Pending' | 'Processing'
 
 export interface SaleRecord {
@@ -54,13 +68,17 @@ export interface SaleRecord {
   paymentStatus: PaymentStatus
 }
 
+/** Status of a farmer's payout request as it moves through operations review. */
+export type PayoutStatus = 'Pending' | 'Approved' | 'Paid' | 'Rejected'
+
 export interface PayoutRecord {
   id: string
   amount: number
   requestedAt: string
   completedAt?: string
-  status: PaymentStatus
+  status: PayoutStatus
   method: string
+  rejectionReason?: string
 }
 
 export interface FarmerPaymentsSummary {
@@ -71,6 +89,7 @@ export interface FarmerPaymentsSummary {
 }
 
 export type NotificationType =
+  | 'storage-request'
   | 'pickup'
   | 'inspection'
   | 'sale'
@@ -91,6 +110,7 @@ export interface FarmerDashboardStats {
   pendingPickupRequests: number
   produceSoldKg: number
   currentEarnings: number
+  pendingPayments: number
   storageCharges: number
   unreadNotifications: number
 }
