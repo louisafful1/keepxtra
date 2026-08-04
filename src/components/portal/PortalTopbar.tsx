@@ -1,0 +1,69 @@
+import { useState } from 'react'
+import { ChevronDown, LogOut, Menu } from 'lucide-react'
+import { useNavigate } from 'react-router-dom'
+import { useAuth } from '@/hooks/useAuth'
+import { cn } from '@/lib/cn'
+
+export function PortalTopbar({ onOpenMobile }: { onOpenMobile: () => void }) {
+  const { user, logout } = useAuth()
+  const navigate = useNavigate()
+  const [menuOpen, setMenuOpen] = useState(false)
+
+  async function handleLogout() {
+    await logout()
+    navigate('/login', { replace: true })
+  }
+
+  return (
+    <header className="sticky top-0 z-30 flex h-16 items-center justify-between border-b border-neutral-200 bg-white/90 px-4 backdrop-blur sm:px-6">
+      <button
+        type="button"
+        onClick={onOpenMobile}
+        aria-label="Open menu"
+        className="flex size-9 items-center justify-center rounded-lg text-neutral-600 hover:bg-neutral-100 lg:hidden"
+      >
+        <Menu className="size-5" />
+      </button>
+
+      <div className="hidden lg:block" />
+
+      <div className="relative">
+        <button
+          type="button"
+          onClick={() => setMenuOpen((v) => !v)}
+          className="flex items-center gap-2.5 rounded-full py-1 pl-1 pr-2.5 transition-colors hover:bg-neutral-100"
+        >
+          <span className="flex size-8 items-center justify-center rounded-full bg-primary-100 text-xs font-semibold text-primary-700">
+            {user?.avatarInitials}
+          </span>
+          <span className="hidden text-left sm:block">
+            <span className="block text-sm font-medium leading-tight text-neutral-900">{user?.name}</span>
+            <span className="block text-xs capitalize leading-tight text-neutral-400">{user?.role}</span>
+          </span>
+          <ChevronDown className={cn('size-4 text-neutral-400 transition-transform', menuOpen && 'rotate-180')} />
+        </button>
+
+        {menuOpen && (
+          <>
+            <button
+              type="button"
+              aria-label="Close menu"
+              onClick={() => setMenuOpen(false)}
+              className="fixed inset-0 z-10 cursor-default"
+            />
+            <div className="absolute right-0 top-full z-20 mt-2 w-48 overflow-hidden rounded-xl border border-neutral-200 bg-white py-1 shadow-premium">
+              <button
+                type="button"
+                onClick={handleLogout}
+                className="flex w-full items-center gap-2.5 px-3.5 py-2.5 text-left text-sm font-medium text-neutral-600 hover:bg-neutral-50 hover:text-red-600"
+              >
+                <LogOut className="size-4" />
+                Log out
+              </button>
+            </div>
+          </>
+        )}
+      </div>
+    </header>
+  )
+}

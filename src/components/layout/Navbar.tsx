@@ -55,6 +55,9 @@ export function Navbar() {
           </nav>
 
           <div className="hidden items-center gap-3 lg:flex">
+            <Button to="/login" variant="ghost" size="md">
+              Farmer Login
+            </Button>
             <Button to="/contact" variant="ghost" size="md">
               Become a Partner
             </Button>

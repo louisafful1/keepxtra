@@ -4,7 +4,7 @@ import { LenisProvider } from '@/animation/LenisProvider'
 import { Navbar } from '@/components/layout/Navbar'
 import { Footer } from '@/components/layout/Footer'
 
-export function Layout() {
+export function WebsiteLayout() {
   const location = useLocation()
 
   return (

@@ -1,4 +1,4 @@
-import { ComingSoonPage } from '@/pages/ComingSoonPage'
+import { ComingSoonPage } from '@/pages/website/ComingSoonPage'
 
 export default function FaqPage() {
   return (
