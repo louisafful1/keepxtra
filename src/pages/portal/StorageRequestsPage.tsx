@@ -1,9 +1,10 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Helmet } from 'react-helmet-async'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { CheckCircle2, Plus } from 'lucide-react'
+import { useSearchParams } from 'react-router-dom'
 import { buildSeo } from '@/lib/seo'
 import { PageHeader } from '@/components/portal/PageHeader'
 import { DataTable, type DataTableColumn } from '@/components/portal/DataTable'
@@ -43,7 +44,20 @@ export default function StorageRequestsPage() {
   const seo = buildSeo({ title: 'Storage Requests', description: 'Request cold storage and track review status.' })
   const { data, isLoading, isError } = useFarmerStorageRequests()
   const { mutate, isPending, isSuccess, reset } = useSubmitStorageRequest()
-  const [formOpen, setFormOpen] = useState(false)
+  const [searchParams, setSearchParams] = useSearchParams()
+  const [formOpen, setFormOpen] = useState(() => searchParams.get('action') === 'new')
+
+  useEffect(() => {
+    if (searchParams.get('action') === 'new') {
+      setSearchParams(
+        (prev) => {
+          prev.delete('action')
+          return prev
+        },
+        { replace: true },
+      )
+    }
+  }, [])
 
   const {
     register,

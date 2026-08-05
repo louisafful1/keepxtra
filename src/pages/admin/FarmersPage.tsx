@@ -1,14 +1,16 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Helmet } from 'react-helmet-async'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { UserPlus } from 'lucide-react'
+import { useSearchParams } from 'react-router-dom'
 import { buildSeo } from '@/lib/seo'
 import { PageHeader } from '@/components/portal/PageHeader'
 import { DataTable, type DataTableColumn } from '@/components/portal/DataTable'
 import { StatusBadge } from '@/components/portal/StatusBadge'
 import { useFarmerAccounts, useRegisterFarmer, useUpdateFarmerStatus } from '@/hooks/useAdminQueries'
+import { useToast } from '@/hooks/useToast'
 import { formatCurrency, formatDate, formatKg } from '@/utils/format'
 import type { FarmerAccount } from '@/types/admin'
 
@@ -29,7 +31,21 @@ export default function FarmersPage() {
   const { data, isLoading, isError } = useFarmerAccounts()
   const { mutate: registerFarmer, isPending: isRegistering } = useRegisterFarmer()
   const { mutate: updateStatus } = useUpdateFarmerStatus()
-  const [formOpen, setFormOpen] = useState(false)
+  const [searchParams, setSearchParams] = useSearchParams()
+  const [formOpen, setFormOpen] = useState(() => searchParams.get('action') === 'new')
+  const toast = useToast()
+
+  useEffect(() => {
+    if (searchParams.get('action') === 'new') {
+      setSearchParams(
+        (prev) => {
+          prev.delete('action')
+          return prev
+        },
+        { replace: true },
+      )
+    }
+  }, [])
 
   const {
     register,
@@ -39,7 +55,13 @@ export default function FarmersPage() {
   } = useForm<RegisterValues>({ resolver: zodResolver(registerSchema) })
 
   function onSubmit(values: RegisterValues) {
-    registerFarmer(values, { onSuccess: () => { reset(); setFormOpen(false) } })
+    registerFarmer(values, {
+      onSuccess: () => {
+        toast('Farmer registered', { variant: 'success', description: `${values.name} added, pending review.` })
+        reset()
+        setFormOpen(false)
+      },
+    })
   }
 
   const columns: DataTableColumn<FarmerAccount>[] = [
@@ -58,7 +80,7 @@ export default function FarmersPage() {
           {r.status !== 'Suspended' ? (
             <button
               type="button"
-              onClick={() => updateStatus({ id: r.id, status: 'Suspended' })}
+              onClick={() => updateStatus({ id: r.id, status: 'Suspended' }, { onSuccess: () => toast(`${r.name} suspended`, { variant: 'info' }) })}
               className="rounded-lg border border-neutral-200 px-2.5 py-1 text-xs font-medium text-neutral-600 hover:bg-neutral-50"
             >
               Suspend
@@ -66,7 +88,7 @@ export default function FarmersPage() {
           ) : (
             <button
               type="button"
-              onClick={() => updateStatus({ id: r.id, status: 'Active' })}
+              onClick={() => updateStatus({ id: r.id, status: 'Active' }, { onSuccess: () => toast(`${r.name} reactivated`, { variant: 'success' }) })}
               className="rounded-lg border border-primary-200 px-2.5 py-1 text-xs font-medium text-primary-700 hover:bg-primary-50"
             >
               Reactivate

@@ -24,11 +24,14 @@ export const adminKeys = {
   storageUtilization: ['admin', 'storage-utilization'] as const,
   salesTrend: ['admin', 'sales-trend'] as const,
   activity: ['admin', 'activity'] as const,
+  drivers: ['admin', 'drivers'] as const,
+  auditLog: ['admin', 'audit-log'] as const,
 }
 
 function invalidateAdminCore(queryClient: ReturnType<typeof useQueryClient>) {
   queryClient.invalidateQueries({ queryKey: adminKeys.dashboard })
   queryClient.invalidateQueries({ queryKey: adminKeys.activity })
+  queryClient.invalidateQueries({ queryKey: adminKeys.auditLog })
 }
 
 export function useAdminDashboard() {
@@ -89,6 +92,14 @@ export function useSalesTrend() {
 
 export function useAdminActivity() {
   return useQuery({ queryKey: adminKeys.activity, queryFn: adminService.getActivityTimeline })
+}
+
+export function useDrivers() {
+  return useQuery({ queryKey: adminKeys.drivers, queryFn: adminService.getDrivers })
+}
+
+export function useAuditLog() {
+  return useQuery({ queryKey: adminKeys.auditLog, queryFn: adminService.getAuditLog })
 }
 
 export function useRegisterFarmer() {

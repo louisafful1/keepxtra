@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Modal, formInputClass, formLabelClass } from '@/components/portal/Modal'
 import { useCreateSale, useInventory } from '@/hooks/useAdminQueries'
+import { useToast } from '@/hooks/useToast'
 import type { OrderRecord } from '@/types/admin'
 
 const buyerTypes: OrderRecord['buyerType'][] = ['Restaurant', 'Hotel', 'Retailer', 'Wholesaler']
@@ -8,6 +9,7 @@ const buyerTypes: OrderRecord['buyerType'][] = ['Restaurant', 'Hotel', 'Retailer
 export function SaleModal({ open, onClose }: { open: boolean; onClose: () => void }) {
   const { data: inventory } = useInventory()
   const { mutate, isPending } = useCreateSale()
+  const toast = useToast()
   const availableItems = inventory?.filter((i) => i.status === 'In Storage' && i.quantityKg > 0) ?? []
 
   const [form, setForm] = useState({
@@ -35,6 +37,7 @@ export function SaleModal({ open, onClose }: { open: boolean; onClose: () => voi
       },
       {
         onSuccess: () => {
+          toast('Sale recorded', { variant: 'success', description: `${form.quantityKg}kg sold to ${form.buyer}.` })
           setForm({ inventoryItemId: '', buyer: '', buyerType: 'Restaurant', quantityKg: 0, sellingPrice: 0, deliveryDate: '' })
           onClose()
         },

@@ -46,6 +46,8 @@ const AdminPaymentsPage = lazy(() => import('@/pages/admin/PaymentsPage'))
 const ReportsPage = lazy(() => import('@/pages/admin/ReportsPage'))
 const AnalyticsPage = lazy(() => import('@/pages/admin/AnalyticsPage'))
 const SettingsPage = lazy(() => import('@/pages/admin/SettingsPage'))
+const DriversPage = lazy(() => import('@/pages/admin/DriversPage'))
+const AuditLogPage = lazy(() => import('@/pages/admin/AuditLogPage'))
 
 function lazyPage(element: ReactNode) {
   return <Suspense fallback={<div className="min-h-screen bg-neutral-50" />}>{element}</Suspense>
@@ -108,11 +110,13 @@ export const router = createBrowserRouter([
           { path: 'pickup-requests', element: lazyPage(<AdminPickupRequestsPage />) },
           { path: 'inspections', element: lazyPage(<InspectionsPage />) },
           { path: 'fleet', element: lazyPage(<FleetPage />) },
+          { path: 'drivers', element: lazyPage(<DriversPage />) },
           { path: 'orders', element: lazyPage(<OrdersPage />) },
           { path: 'sales', element: lazyPage(<SalesPage />) },
           { path: 'payments', element: lazyPage(<AdminPaymentsPage />) },
           { path: 'reports', element: lazyPage(<ReportsPage />) },
           { path: 'analytics', element: lazyPage(<AnalyticsPage />) },
+          { path: 'audit-log', element: lazyPage(<AuditLogPage />) },
           { path: 'settings', element: lazyPage(<SettingsPage />) },
           { path: '*', element: <Navigate to="/admin" replace /> },
         ],

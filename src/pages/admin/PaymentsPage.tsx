@@ -8,6 +8,7 @@ import { DataTable, type DataTableColumn } from '@/components/portal/DataTable'
 import { StatusBadge } from '@/components/portal/StatusBadge'
 import { useAdminPayouts, useApprovePayout, useProcessPayout, useRejectPayout } from '@/hooks/useAdminQueries'
 import { useConfirm } from '@/hooks/useConfirm'
+import { useToast } from '@/hooks/useToast'
 import { formatCurrency, formatDate } from '@/utils/format'
 import type { AdminPayoutRecord } from '@/types/admin'
 
@@ -18,6 +19,7 @@ export default function AdminPaymentsPage() {
   const { mutate: rejectPayout } = useRejectPayout()
   const { mutate: processPayout, isPending: isProcessing } = useProcessPayout()
   const confirm = useConfirm()
+  const toast = useToast()
 
   const pendingTotal = data?.filter((p) => p.status !== 'Paid' && p.status !== 'Rejected').reduce((sum, p) => sum + p.amount, 0) ?? 0
   const paidTotal = data?.filter((p) => p.status === 'Paid').reduce((sum, p) => sum + p.amount, 0) ?? 0
@@ -32,7 +34,8 @@ export default function AdminPaymentsPage() {
       noteLabel: 'Reason for rejection',
       notePlaceholder: 'e.g. Balance mismatch, please resubmit',
     })
-    if (confirmed && note) rejectPayout({ id: payout.id, reason: note })
+    if (confirmed && note)
+      rejectPayout({ id: payout.id, reason: note }, { onSuccess: () => toast('Payout rejected', { variant: 'error' }) })
   }
 
   async function handleMarkPaid(payout: AdminPayoutRecord) {
@@ -41,7 +44,10 @@ export default function AdminPaymentsPage() {
       description: `Confirm GHS ${payout.amount.toLocaleString()} has been sent to ${payout.farmerName} via ${payout.method}.`,
       confirmLabel: 'Mark Paid',
     })
-    if (confirmed) processPayout(payout.id)
+    if (confirmed)
+      processPayout(payout.id, {
+        onSuccess: () => toast('Payout marked as paid', { variant: 'success', description: `GHS ${payout.amount.toLocaleString()} to ${payout.farmerName}` }),
+      })
   }
 
   const columns: DataTableColumn<AdminPayoutRecord>[] = [
@@ -57,7 +63,11 @@ export default function AdminPaymentsPage() {
         if (r.status === 'Pending') {
           return (
             <div className="flex justify-end gap-1.5">
-              <button type="button" onClick={() => approvePayout(r.id)} className="rounded-lg bg-primary-500 px-2.5 py-1 text-xs font-medium text-white hover:bg-primary-600">
+              <button
+                type="button"
+                onClick={() => approvePayout(r.id, { onSuccess: () => toast('Payout approved', { variant: 'success' }) })}
+                className="rounded-lg bg-primary-500 px-2.5 py-1 text-xs font-medium text-white hover:bg-primary-600"
+              >
                 Approve
               </button>
               <button type="button" onClick={() => handleReject(r)} className="rounded-lg border border-red-200 px-2.5 py-1 text-xs font-medium text-red-600 hover:bg-red-50">

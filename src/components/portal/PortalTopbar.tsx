@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Bell, ChevronDown, LogOut, Menu } from 'lucide-react'
+import { Bell, ChevronDown, LogOut, Menu, Search } from 'lucide-react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '@/hooks/useAuth'
 import { cn } from '@/lib/cn'
@@ -31,7 +31,15 @@ export function PortalTopbar({ onOpenMobile, notificationCount, notificationHref
         <Menu className="size-5" />
       </button>
 
-      <div className="hidden lg:block" />
+      <button
+        type="button"
+        onClick={() => window.dispatchEvent(new Event('open-command-palette'))}
+        className="hidden items-center gap-2.5 rounded-full border border-neutral-200 bg-neutral-50 px-3.5 py-1.5 text-sm text-neutral-400 transition-colors hover:border-neutral-300 hover:text-neutral-600 lg:flex"
+      >
+        <Search className="size-3.5" />
+        Search or run a command…
+        <kbd className="ml-6 rounded border border-neutral-200 bg-white px-1.5 py-0.5 text-[10px] font-medium text-neutral-400">Ctrl K</kbd>
+      </button>
 
       <div className="flex items-center gap-2">
         {notificationHref && (

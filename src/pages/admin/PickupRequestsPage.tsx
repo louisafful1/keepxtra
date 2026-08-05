@@ -7,6 +7,7 @@ import { StatusBadge } from '@/components/portal/StatusBadge'
 import { AssignPickupModal } from '@/components/portal/AssignPickupModal'
 import { ReceivingModal } from '@/components/portal/ReceivingModal'
 import { useAdminPickupRequests, useAdvancePickupStatus, useApprovePickupRequest } from '@/hooks/useAdminQueries'
+import { useToast } from '@/hooks/useToast'
 import { formatDate, formatKg } from '@/utils/format'
 import type { AdminPickupRequest } from '@/types/admin'
 import type { PickupStatus } from '@/types/farmer'
@@ -24,6 +25,7 @@ export default function AdminPickupRequestsPage() {
   const { mutate: advance } = useAdvancePickupStatus()
   const [assigning, setAssigning] = useState<AdminPickupRequest | null>(null)
   const [receiving, setReceiving] = useState<AdminPickupRequest | null>(null)
+  const toast = useToast()
 
   const columns: DataTableColumn<AdminPickupRequest>[] = [
     { header: 'Farmer', render: (r) => <span className="font-medium text-neutral-900">{r.farmerName}</span> },
@@ -42,7 +44,11 @@ export default function AdminPickupRequestsPage() {
       render: (r) => {
         if (r.status === 'Pending') {
           return (
-            <button type="button" onClick={() => approve(r.id)} className="rounded-lg bg-primary-500 px-2.5 py-1 text-xs font-medium text-white hover:bg-primary-600">
+            <button
+              type="button"
+              onClick={() => approve(r.id, { onSuccess: () => toast('Pickup approved', { variant: 'success' }) })}
+              className="rounded-lg bg-primary-500 px-2.5 py-1 text-xs font-medium text-white hover:bg-primary-600"
+            >
               Approve
             </button>
           )
@@ -66,7 +72,7 @@ export default function AdminPickupRequestsPage() {
           return (
             <button
               type="button"
-              onClick={() => advance({ id: r.id, status: action.next })}
+              onClick={() => advance({ id: r.id, status: action.next }, { onSuccess: () => toast(action.label, { variant: 'success' }) })}
               className="rounded-lg border border-neutral-200 px-2.5 py-1 text-xs font-medium text-neutral-600 hover:bg-neutral-50"
             >
               {action.label}

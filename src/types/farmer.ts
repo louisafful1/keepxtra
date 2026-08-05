@@ -95,10 +95,26 @@ export type NotificationType =
   | 'sale'
   | 'payment'
   | 'storage-reminder'
+  | 'system'
+  | 'warning'
+
+export type NotificationCategory = 'Inventory' | 'Sales' | 'Payments' | 'Pickups' | 'System' | 'Warnings' | 'Alerts'
+
+export const notificationCategoryByType: Record<NotificationType, NotificationCategory> = {
+  'storage-request': 'Inventory',
+  pickup: 'Pickups',
+  inspection: 'Inventory',
+  sale: 'Sales',
+  payment: 'Payments',
+  'storage-reminder': 'Alerts',
+  system: 'System',
+  warning: 'Warnings',
+}
 
 export interface NotificationItem {
   id: string
   type: NotificationType
+  category: NotificationCategory
   title: string
   message: string
   createdAt: string

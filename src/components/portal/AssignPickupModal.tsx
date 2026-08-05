@@ -1,10 +1,12 @@
 import { useState } from 'react'
 import { Modal, formInputClass, formLabelClass } from '@/components/portal/Modal'
 import { useUpdatePickupAssignment } from '@/hooks/useAdminQueries'
+import { useToast } from '@/hooks/useToast'
 import type { AdminPickupRequest } from '@/types/admin'
 
 export function AssignPickupModal({ pickup, onClose }: { pickup: AdminPickupRequest | null; onClose: () => void }) {
   const { mutate, isPending } = useUpdatePickupAssignment()
+  const toast = useToast()
   const [form, setForm] = useState({
     driverName: pickup?.driverName ?? '',
     vehiclePlate: pickup?.vehiclePlate ?? '',
@@ -17,7 +19,15 @@ export function AssignPickupModal({ pickup, onClose }: { pickup: AdminPickupRequ
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     if (!pickup) return
-    mutate({ id: pickup.id, ...form }, { onSuccess: onClose })
+    mutate(
+      { id: pickup.id, ...form },
+      {
+        onSuccess: () => {
+          toast('Pickup assigned', { variant: 'success', description: `${form.driverName} will collect ${pickup.crop} on ${form.pickupDate}.` })
+          onClose()
+        },
+      },
+    )
   }
 
   return (

@@ -11,18 +11,23 @@ const toneClasses: Record<StatusTone, { bg: string; text: string; dot: string }>
 /** Central status → tone map. Add new statuses here as the mock domain grows. */
 const statusToneMap: Record<string, StatusTone> = {
   // Produce
+  'Pending Inspection': 'amber',
   'In Storage': 'green',
   Reserved: 'blue',
   Sold: 'gray',
   Disposed: 'red',
-  // Pickup
+  // Storage requests / pickups
   Pending: 'amber',
   Approved: 'blue',
+  Rejected: 'red',
+  'Info Requested': 'amber',
   'Vehicle Assigned': 'blue',
+  'Driver Assigned': 'blue',
   'Driver En Route': 'blue',
   Collected: 'green',
   'Delivered to Warehouse': 'green',
-  // Payments
+  Completed: 'green',
+  // Payments / payouts
   Paid: 'green',
   Processing: 'amber',
   // Farmer accounts
@@ -33,6 +38,18 @@ const statusToneMap: Record<string, StatusTone> = {
   Available: 'green',
   'On Route': 'blue',
   Maintenance: 'red',
+  'Up to Date': 'green',
+  'Due Soon': 'amber',
+  Overdue: 'red',
+  // Drivers
+  'On Delivery': 'blue',
+  'Off Duty': 'gray',
+  // Cold rooms
+  Operational: 'green',
+  'Under Maintenance': 'amber',
+  Offline: 'red',
+  // Inspection outcomes
+  'Partial Acceptance': 'amber',
   // Orders
   Confirmed: 'blue',
   'Out for Delivery': 'blue',

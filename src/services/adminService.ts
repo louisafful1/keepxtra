@@ -21,6 +21,8 @@ import type {
 } from '@/types/admin'
 import type { PickupStatus } from '@/types/farmer'
 import type { ActivityEvent } from '@/types/activity'
+import type { AuditLogEntry } from '@/types/audit'
+import type { Driver } from '@/types/driver'
 import {
   mockFleet,
   mockFarmerAccounts,
@@ -33,10 +35,13 @@ import {
 import {
   CURRENT_FARMER_NAME,
   addActivity,
+  addAuditEntry,
   generateId,
   mockActivityLog,
   mockAdminPayouts,
   mockAdminSales,
+  mockAuditLog,
+  mockDrivers,
   mockInspections,
   mockInventoryItems,
   mockPickups,
@@ -108,12 +113,16 @@ async function registerFarmer(input: { name: string; email: string; phone: strin
     totalEarnings: 0,
   }
   mockFarmerAccounts.unshift(created)
+  addAuditEntry('Registered farmer', `${created.id} (${created.name})`, undefined, 'Pending Review')
   return simulateMutation(created)
 }
 
 async function updateFarmerStatus(id: string, status: FarmerAccountStatus): Promise<{ id: string; status: FarmerAccountStatus }> {
   const farmer = mockFarmerAccounts.find((f) => f.id === id)
-  if (farmer) farmer.status = status
+  if (farmer) {
+    addAuditEntry('Updated farmer status', `${id} (${farmer.name})`, farmer.status, status)
+    farmer.status = status
+  }
   return simulateMutation({ id, status })
 }
 
@@ -144,6 +153,7 @@ async function approveStorageRequest(id: string): Promise<AdminPickupRequest | n
   request.linkedPickupRequestId = pickup.id
 
   addActivity('storage-request-approved', 'Storage Request Approved', `${request.crop} (${request.quantityKg}kg) approved — pickup request created.`)
+  addAuditEntry('Approved storage request', `${request.id} (${request.crop}, ${request.quantityKg}kg)`, 'Pending', 'Approved')
   notifyIfCurrentFarmer(
     request.farmerName,
     'storage-request',
@@ -161,6 +171,7 @@ async function rejectStorageRequest(id: string, reason: string): Promise<AdminSt
   request.reviewNotes = reason
 
   addActivity('storage-request-rejected', 'Storage Request Rejected', `${request.crop} (${request.quantityKg}kg) was rejected: ${reason}`)
+  addAuditEntry('Rejected storage request', `${request.id} (${request.crop}, ${request.quantityKg}kg)`, 'Pending', `Rejected — ${reason}`)
   notifyIfCurrentFarmer(request.farmerName, 'storage-request', 'Storage Request Rejected', `Your request for ${request.crop} was rejected: ${reason}`)
 
   return simulateMutation(request)
@@ -173,6 +184,7 @@ async function requestStorageInfo(id: string, message: string): Promise<AdminSto
   request.reviewNotes = message
 
   addActivity('storage-request-info-requested', 'More Information Requested', `Operations requested more info on ${request.crop}: ${message}`)
+  addAuditEntry('Requested more info on storage request', `${request.id} (${request.crop})`, 'Pending', `Info Requested — ${message}`)
   notifyIfCurrentFarmer(request.farmerName, 'storage-request', 'More Information Needed', `KeepXtra needs more details on your ${request.crop} request: ${message}`)
 
   return simulateMutation(request)
@@ -190,6 +202,7 @@ async function approvePickupRequest(id: string): Promise<AdminPickupRequest | nu
   pickup.status = 'Approved'
 
   addActivity('pickup-approved', 'Pickup Approved', `Pickup for ${pickup.crop} (${pickup.quantityKg}kg) approved.`)
+  addAuditEntry('Approved pickup', `${pickup.id} (${pickup.crop})`, 'Pending', 'Approved')
   notifyIfCurrentFarmer(pickup.farmerName, 'pickup', 'Pickup Approved', `Your pickup request for ${pickup.crop} has been approved.`)
 
   return simulateMutation(pickup)
@@ -212,6 +225,7 @@ async function updatePickupAssignment(input: {
   pickup.status = 'Driver Assigned'
 
   addActivity('driver-assigned', 'Driver Assigned', `${input.driverName} (${input.vehiclePlate}) assigned to collect ${pickup.crop}.`)
+  addAuditEntry('Assigned driver to pickup', `${pickup.id} (${pickup.crop})`, 'Approved', `Driver Assigned — ${input.driverName}`)
   notifyIfCurrentFarmer(pickup.farmerName, 'pickup', 'Driver Assigned', `${input.driverName} has been assigned to collect your ${pickup.crop} on ${input.pickupDate}.`)
 
   return simulateMutation(pickup)
@@ -220,7 +234,9 @@ async function updatePickupAssignment(input: {
 async function advancePickupStatus(id: string, status: PickupStatus): Promise<AdminPickupRequest | null> {
   const pickup = mockPickups.find((p) => p.id === id)
   if (!pickup) return simulateMutation(null)
+  const previousStatus = pickup.status
   pickup.status = status
+  addAuditEntry('Updated pickup status', `${pickup.id} (${pickup.crop})`, previousStatus, status)
 
   if (status === 'Collected') {
     addActivity('produce-collected', 'Produce Collected', `${pickup.crop} (${pickup.quantityKg}kg) collected from ${pickup.pickupLocation}.`)
@@ -266,9 +282,14 @@ async function receiveAtWarehouse(input: WarehouseReceivingInput): Promise<Wareh
   pickup.status = 'Completed'
 
   const warehouse = mockWarehouses.find((w) => w.name === input.warehouse)
-  if (warehouse) warehouse.currentOccupancyKg = Math.min(warehouse.coldRoomCapacityKg, warehouse.currentOccupancyKg + input.quantityKg)
+  if (warehouse) {
+    warehouse.currentOccupancyKg = Math.min(warehouse.coldRoomCapacityKg, warehouse.currentOccupancyKg + input.quantityKg)
+    const coldRoom = warehouse.coldRooms.find((r) => r.name === input.coldRoom)
+    if (coldRoom) coldRoom.occupancyKg = Math.min(coldRoom.capacityKg, coldRoom.occupancyKg + input.quantityKg)
+  }
 
   addActivity('produce-received', 'Produce Received', `${input.quantityKg}kg of ${input.crop} received at ${input.warehouse} (${input.coldRoom}).`)
+  addAuditEntry('Received produce at warehouse', `${inventoryItem.id} (${input.crop}, ${input.quantityKg}kg)`, 'In Transit', `${input.warehouse} — ${input.coldRoom}`)
   notifyIfCurrentFarmer(pickup.farmerName, 'pickup', 'Produce Received', `Your ${input.crop} arrived safely at ${input.warehouse} and is awaiting quality inspection.`)
 
   return simulateMutation(receipt)
@@ -312,6 +333,7 @@ async function createInspection(input: CreateInspectionInput): Promise<Inspectio
   }
 
   addActivity('inspection-completed', 'Inspection Completed', `${item.crop} inspected by ${input.inspector}: ${input.outcome}.`)
+  addAuditEntry('Completed inspection', `${item.id} (${item.crop})`, 'Pending Inspection', input.outcome)
   notifyIfCurrentFarmer(item.farmerName, 'inspection', 'Inspection Complete', `Your ${item.crop} was inspected: ${input.outcome} (Grade ${input.grade}).`)
 
   return simulateMutation(record)
@@ -321,6 +343,10 @@ async function createInspection(input: CreateInspectionInput): Promise<Inspectio
 
 async function getFleet(): Promise<FleetVehicle[]> {
   return simulateRequest(mockFleet)
+}
+
+async function getDrivers(): Promise<Driver[]> {
+  return simulateRequest(mockDrivers)
 }
 
 async function getWarehouses(): Promise<WarehouseRecord[]> {
@@ -368,6 +394,7 @@ async function createSale(input: CreateSaleInput): Promise<AdminSaleRecord | nul
   if (farmerAccount) farmerAccount.totalEarnings += farmerEarnings
 
   addActivity('sale-completed', 'Sale Completed', `${input.quantityKg}kg of ${item.crop} sold to ${input.buyer} for GHS ${input.sellingPrice.toLocaleString()}.`)
+  addAuditEntry('Recorded sale', `${sale.id} (${item.crop}, ${input.quantityKg}kg)`, undefined, `${input.buyer} — GHS ${input.sellingPrice.toLocaleString()}`)
   notifyIfCurrentFarmer(item.farmerName, 'sale', 'Produce Sold', `${input.quantityKg}kg of ${item.crop} was sold to ${input.buyer} for GHS ${input.sellingPrice.toLocaleString()}.`)
 
   return simulateMutation(sale)
@@ -385,6 +412,7 @@ async function approvePayout(id: string): Promise<AdminPayoutRecord | null> {
   payout.status = 'Approved'
 
   addActivity('payment-approved', 'Payment Approved', `Payout of GHS ${payout.amount.toLocaleString()} to ${payout.farmerName} approved.`)
+  addAuditEntry('Approved payout', `${payout.id} (${payout.farmerName})`, 'Pending', 'Approved')
   notifyIfCurrentFarmer(payout.farmerName, 'payment', 'Payment Approved', `Your payout request of GHS ${payout.amount.toLocaleString()} has been approved and is being processed.`)
 
   return simulateMutation(payout)
@@ -397,6 +425,7 @@ async function rejectPayout(id: string, reason: string): Promise<AdminPayoutReco
   payout.rejectionReason = reason
 
   addActivity('payment-rejected', 'Payment Rejected', `Payout of GHS ${payout.amount.toLocaleString()} to ${payout.farmerName} rejected: ${reason}`)
+  addAuditEntry('Rejected payout', `${payout.id} (${payout.farmerName})`, 'Pending', `Rejected — ${reason}`)
   notifyIfCurrentFarmer(payout.farmerName, 'payment', 'Payment Rejected', `Your payout request was rejected: ${reason}`)
 
   return simulateMutation(payout)
@@ -409,6 +438,7 @@ async function processPayout(id: string): Promise<AdminPayoutRecord | null> {
   payout.completedAt = new Date().toISOString().slice(0, 10)
 
   addActivity('payment-sent', 'Payment Sent', `GHS ${payout.amount.toLocaleString()} paid out to ${payout.farmerName} via ${payout.method}.`)
+  addAuditEntry('Marked payout as paid', `${payout.id} (${payout.farmerName})`, 'Approved', 'Paid')
   notifyIfCurrentFarmer(payout.farmerName, 'payment', 'Payment Sent', `GHS ${payout.amount.toLocaleString()} has been sent to your ${payout.method} account.`)
 
   return simulateMutation(payout)
@@ -432,6 +462,10 @@ async function getActivityTimeline(): Promise<ActivityEvent[]> {
   return simulateRequest(mockActivityLog.slice(0, 20))
 }
 
+async function getAuditLog(): Promise<AuditLogEntry[]> {
+  return simulateRequest(mockAuditLog)
+}
+
 export const adminService = {
   getDashboardStats,
   getFarmers,
@@ -450,6 +484,7 @@ export const adminService = {
   getInspections,
   createInspection,
   getFleet,
+  getDrivers,
   getWarehouses,
   getOrders,
   getSales,
@@ -462,4 +497,5 @@ export const adminService = {
   getStorageUtilization,
   getSalesTrend,
   getActivityTimeline,
+  getAuditLog,
 }

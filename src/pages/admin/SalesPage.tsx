@@ -1,6 +1,7 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Helmet } from 'react-helmet-async'
 import { Plus } from 'lucide-react'
+import { useSearchParams } from 'react-router-dom'
 import { buildSeo } from '@/lib/seo'
 import { PageHeader } from '@/components/portal/PageHeader'
 import { DataTable, type DataTableColumn } from '@/components/portal/DataTable'
@@ -25,7 +26,20 @@ const columns: DataTableColumn<AdminSaleRecord>[] = [
 export default function SalesPage() {
   const seo = buildSeo({ title: 'Sales', description: 'All sales made to restaurants, hotels, retailers, and wholesalers.' })
   const { data, isLoading, isError } = useAdminSales()
-  const [modalOpen, setModalOpen] = useState(false)
+  const [searchParams, setSearchParams] = useSearchParams()
+  const [modalOpen, setModalOpen] = useState(() => searchParams.get('action') === 'new')
+
+  useEffect(() => {
+    if (searchParams.get('action') === 'new') {
+      setSearchParams(
+        (prev) => {
+          prev.delete('action')
+          return prev
+        },
+        { replace: true },
+      )
+    }
+  }, [])
 
   const totalCommission = data?.reduce((sum, s) => sum + s.commission, 0) ?? 0
 

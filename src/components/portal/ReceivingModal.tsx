@@ -1,11 +1,13 @@
 import { useState } from 'react'
 import { Modal, formInputClass, formLabelClass } from '@/components/portal/Modal'
 import { useReceiveAtWarehouse, useWarehouses } from '@/hooks/useAdminQueries'
+import { useToast } from '@/hooks/useToast'
 import type { AdminPickupRequest } from '@/types/admin'
 
 export function ReceivingModal({ pickup, onClose }: { pickup: AdminPickupRequest | null; onClose: () => void }) {
   const { mutate, isPending } = useReceiveAtWarehouse()
   const { data: warehouses } = useWarehouses()
+  const toast = useToast()
   const [form, setForm] = useState({
     quantityKg: pickup?.quantityKg ?? 0,
     weightKg: pickup?.quantityKg ?? 0,
@@ -19,6 +21,8 @@ export function ReceivingModal({ pickup, onClose }: { pickup: AdminPickupRequest
   })
 
   if (!pickup) return null
+
+  const selectedWarehouse = warehouses?.find((w) => w.name === form.warehouse)
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -37,7 +41,12 @@ export function ReceivingModal({ pickup, onClose }: { pickup: AdminPickupRequest
         storageDate: form.storageDate,
         expiryDate: form.expiryDate,
       },
-      { onSuccess: onClose },
+      {
+        onSuccess: () => {
+          toast('Produce received', { variant: 'success', description: `${pickup.crop} added to inventory at ${form.warehouse}.` })
+          onClose()
+        },
+      },
     )
   }
 
@@ -82,27 +91,36 @@ export function ReceivingModal({ pickup, onClose }: { pickup: AdminPickupRequest
             required
             className={formInputClass}
             value={form.warehouse}
-            onChange={(e) => setForm((f) => ({ ...f, warehouse: e.target.value }))}
+            onChange={(e) => setForm((f) => ({ ...f, warehouse: e.target.value, coldRoom: '' }))}
           >
             <option value="" disabled>
               Select warehouse
             </option>
             {warehouses?.map((w) => (
               <option key={w.id} value={w.name}>
-                {w.name}
+                {w.name} ({w.code})
               </option>
             ))}
           </select>
         </div>
         <div>
           <label className={formLabelClass}>Cold Room</label>
-          <input
+          <select
             required
-            placeholder="e.g. Cold Room A"
+            disabled={!selectedWarehouse}
             className={formInputClass}
             value={form.coldRoom}
             onChange={(e) => setForm((f) => ({ ...f, coldRoom: e.target.value }))}
-          />
+          >
+            <option value="" disabled>
+              {selectedWarehouse ? 'Select cold room' : 'Select a warehouse first'}
+            </option>
+            {selectedWarehouse?.coldRooms.map((room) => (
+              <option key={room.id} value={room.name} disabled={room.status !== 'Operational'}>
+                {room.name} {room.status !== 'Operational' ? `(${room.status})` : ''}
+              </option>
+            ))}
+          </select>
         </div>
         <div>
           <label className={formLabelClass}>Storage Bin</label>

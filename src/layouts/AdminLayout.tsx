@@ -7,6 +7,7 @@ import {
   ClipboardCheck,
   ClipboardList,
   FileCheck2,
+  History,
   LayoutDashboard,
   Receipt,
   Settings,
@@ -18,6 +19,7 @@ import {
 } from 'lucide-react'
 import { PortalSidebar, type PortalNavItem } from '@/components/portal/PortalSidebar'
 import { PortalTopbar } from '@/components/portal/PortalTopbar'
+import { CommandPalette } from '@/components/portal/CommandPalette'
 
 const adminNavItems: PortalNavItem[] = [
   { label: 'Dashboard', to: '/admin', icon: LayoutDashboard, end: true },
@@ -28,11 +30,13 @@ const adminNavItems: PortalNavItem[] = [
   { label: 'Pickup Requests', to: '/admin/pickup-requests', icon: Truck },
   { label: 'Inspections', to: '/admin/inspections', icon: ClipboardCheck },
   { label: 'Fleet', to: '/admin/fleet', icon: Car },
+  { label: 'Drivers', to: '/admin/drivers', icon: Users },
   { label: 'Orders', to: '/admin/orders', icon: ShoppingCart },
   { label: 'Sales', to: '/admin/sales', icon: Receipt },
   { label: 'Payments', to: '/admin/payments', icon: Wallet },
   { label: 'Reports', to: '/admin/reports', icon: ClipboardList },
   { label: 'Analytics', to: '/admin/analytics', icon: BarChart3 },
+  { label: 'Audit Log', to: '/admin/audit-log', icon: History },
   { label: 'Settings', to: '/admin/settings', icon: Settings },
 ]
 
@@ -55,6 +59,7 @@ export function AdminLayout() {
           </div>
         </main>
       </div>
+      <CommandPalette />
     </div>
   )
 }

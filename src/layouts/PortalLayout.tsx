@@ -13,6 +13,7 @@ import {
 } from 'lucide-react'
 import { PortalSidebar, type PortalNavItem } from '@/components/portal/PortalSidebar'
 import { PortalTopbar } from '@/components/portal/PortalTopbar'
+import { CommandPalette } from '@/components/portal/CommandPalette'
 import { useFarmerNotifications } from '@/hooks/useFarmerQueries'
 
 const farmerNavItems: PortalNavItem[] = [
@@ -52,6 +53,7 @@ export function PortalLayout() {
           </div>
         </main>
       </div>
+      <CommandPalette />
     </div>
   )
 }

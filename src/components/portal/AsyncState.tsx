@@ -24,15 +24,17 @@ export function AsyncState({
   isError,
   errorMessage,
   loadingLabel,
+  loadingSkeleton,
   children,
 }: {
   isLoading: boolean
   isError: boolean
   errorMessage?: string
   loadingLabel?: string
+  loadingSkeleton?: ReactNode
   children: ReactNode
 }) {
-  if (isLoading) return <LoadingBlock label={loadingLabel} />
+  if (isLoading) return loadingSkeleton ? <>{loadingSkeleton}</> : <LoadingBlock label={loadingLabel} />
   if (isError) return <ErrorBlock message={errorMessage} />
   return <>{children}</>
 }

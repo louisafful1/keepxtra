@@ -10,6 +10,7 @@ import {
   useRequestStorageInfo,
 } from '@/hooks/useAdminQueries'
 import { useConfirm } from '@/hooks/useConfirm'
+import { useToast } from '@/hooks/useToast'
 import { formatDate, formatKg } from '@/utils/format'
 import type { AdminStorageRequest } from '@/types/admin'
 
@@ -20,6 +21,7 @@ export default function AdminStorageRequestsPage() {
   const { mutate: reject } = useRejectStorageRequest()
   const { mutate: requestInfo } = useRequestStorageInfo()
   const confirm = useConfirm()
+  const toast = useToast()
 
   async function handleApprove(request: AdminStorageRequest) {
     const { confirmed } = await confirm({
@@ -27,7 +29,10 @@ export default function AdminStorageRequestsPage() {
       description: `This creates a pickup request for ${request.quantityKg}kg of ${request.crop} from ${request.farmerName}.`,
       confirmLabel: 'Approve',
     })
-    if (confirmed) approve(request.id)
+    if (confirmed)
+      approve(request.id, {
+        onSuccess: () => toast('Storage request approved', { variant: 'success', description: 'A pickup request has been created.' }),
+      })
   }
 
   async function handleReject(request: AdminStorageRequest) {
@@ -40,7 +45,11 @@ export default function AdminStorageRequestsPage() {
       noteLabel: 'Reason for rejection',
       notePlaceholder: 'e.g. Quantity exceeds available capacity this week',
     })
-    if (confirmed && note) reject({ id: request.id, reason: note })
+    if (confirmed && note)
+      reject(
+        { id: request.id, reason: note },
+        { onSuccess: () => toast('Storage request rejected', { variant: 'error' }) },
+      )
   }
 
   async function handleRequestInfo(request: AdminStorageRequest) {
@@ -52,7 +61,11 @@ export default function AdminStorageRequestsPage() {
       noteLabel: 'What do you need to know?',
       notePlaceholder: 'e.g. Can you confirm the exact harvest date?',
     })
-    if (confirmed && note) requestInfo({ id: request.id, message: note })
+    if (confirmed && note)
+      requestInfo(
+        { id: request.id, message: note },
+        { onSuccess: () => toast('Information request sent', { variant: 'info' }) },
+      )
   }
 
   const columns: DataTableColumn<AdminStorageRequest>[] = [

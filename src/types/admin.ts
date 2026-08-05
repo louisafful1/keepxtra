@@ -78,14 +78,29 @@ export interface WarehouseReceipt extends WarehouseReceivingInput {
   inventoryItemId: string
 }
 
+export type ColdRoomStatus = 'Operational' | 'Under Maintenance' | 'Offline'
+
+export interface ColdRoom {
+  id: string
+  name: string
+  temperatureC: number
+  capacityKg: number
+  occupancyKg: number
+  status: ColdRoomStatus
+  lastInspectionDate: string
+}
+
 export interface WarehouseRecord {
   id: string
   name: string
+  code: string
+  address: string
   location: string
   coldRoomCapacityKg: number
   currentOccupancyKg: number
   temperatureC: number
   lastLoggedAt: string
+  coldRooms: ColdRoom[]
 }
 
 export interface AdminPickupRequest {
@@ -105,15 +120,21 @@ export interface AdminPickupRequest {
 }
 
 export type VehicleStatus = 'Available' | 'On Route' | 'Maintenance'
+export type MaintenanceStatus = 'Up to Date' | 'Due Soon' | 'Overdue'
 
 export interface FleetVehicle {
   id: string
   plate: string
+  registrationNumber: string
   type: string
   driverName: string
   status: VehicleStatus
+  currentAssignment: string
   fuelLevelPct: number
   lastMaintenanceAt: string
+  nextServiceDue: string
+  maintenanceStatus: MaintenanceStatus
+  healthScorePct: number
   mileageKm: number
 }
 

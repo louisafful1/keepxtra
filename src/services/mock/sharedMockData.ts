@@ -9,10 +9,15 @@ import type {
 } from '@/types/admin'
 import type { ActivityEvent, ActivityType } from '@/types/activity'
 import type { NotificationItem, NotificationType } from '@/types/farmer'
+import { notificationCategoryByType } from '@/types/farmer'
+import type { AuditLogEntry } from '@/types/audit'
+import type { Driver } from '@/types/driver'
 import { mockFarmerNotifications } from '@/services/mock/farmerMockData'
 
 /** Single demo farmer — every "current farmer" query filters down to this name. */
 export const CURRENT_FARMER_NAME = 'Kwame Asante'
+/** Single demo admin — attributed as the actor on every audit log entry. */
+export const CURRENT_ADMIN_NAME = 'Ama Serwaa'
 
 export function generateId(prefix: string) {
   return `${prefix}-${Date.now().toString(36)}${Math.floor(Math.random() * 1000)}`
@@ -333,6 +338,7 @@ export function notifyFarmer(type: NotificationType, title: string, message: str
   const notification: NotificationItem = {
     id: generateId('ntf'),
     type,
+    category: notificationCategoryByType[type],
     title,
     message,
     createdAt: new Date().toISOString(),
@@ -340,4 +346,94 @@ export function notifyFarmer(type: NotificationType, title: string, message: str
   }
   mockFarmerNotifications.unshift(notification)
   return notification
+}
+
+// ================= Drivers (canonical) =================
+
+export const mockDrivers: Driver[] = [
+  {
+    id: 'drv-01',
+    name: 'Samuel Owusu',
+    avatarInitials: 'SO',
+    licenseNumber: 'DL-GH-88213',
+    phone: '+233 24 112 8890',
+    assignedVehiclePlate: 'GT 4521-24',
+    todaysDeliveries: 2,
+    completedDeliveries: 214,
+    performanceRating: 4.8,
+    availability: 'On Delivery',
+  },
+  {
+    id: 'drv-02',
+    name: 'Yaw Boateng',
+    avatarInitials: 'YB',
+    licenseNumber: 'DL-GH-77419',
+    phone: '+233 20 887 3312',
+    assignedVehiclePlate: 'GR 1187-23',
+    todaysDeliveries: 1,
+    completedDeliveries: 186,
+    performanceRating: 4.6,
+    availability: 'On Delivery',
+  },
+  {
+    id: 'drv-03',
+    name: 'Abdul Rahman',
+    avatarInitials: 'AR',
+    licenseNumber: 'DL-GH-90071',
+    phone: '+233 27 445 1290',
+    assignedVehiclePlate: 'GW 8823-22',
+    todaysDeliveries: 0,
+    completedDeliveries: 142,
+    performanceRating: 4.4,
+    availability: 'Available',
+  },
+  {
+    id: 'drv-04',
+    name: 'Emmanuel Tetteh',
+    avatarInitials: 'ET',
+    licenseNumber: 'DL-GH-65502',
+    phone: '+233 55 220 7761',
+    assignedVehiclePlate: 'GS 2290-24',
+    todaysDeliveries: 0,
+    completedDeliveries: 98,
+    performanceRating: 4.1,
+    availability: 'Off Duty',
+  },
+]
+
+// ================= Audit log (canonical) =================
+
+export const mockAuditLog: AuditLogEntry[] = [
+  {
+    id: 'aud-0001',
+    user: CURRENT_ADMIN_NAME,
+    action: 'Approved storage request',
+    affectedRecord: 'str-2994 (Plantain, 700kg)',
+    previousValue: 'Pending',
+    newValue: 'Approved',
+    timestamp: '2026-07-22T10:12:00Z',
+  },
+  {
+    id: 'aud-0002',
+    user: CURRENT_ADMIN_NAME,
+    action: 'Processed payout',
+    affectedRecord: 'pay-501 (Kwame Asante)',
+    previousValue: 'Approved',
+    newValue: 'Paid',
+    timestamp: '2026-07-26T16:00:00Z',
+  },
+]
+
+export function addAuditEntry(action: string, affectedRecord: string, previousValue?: string, newValue?: string) {
+  const entry: AuditLogEntry = {
+    id: generateId('aud'),
+    user: CURRENT_ADMIN_NAME,
+    action,
+    affectedRecord,
+    previousValue,
+    newValue,
+    timestamp: new Date().toISOString(),
+  }
+  mockAuditLog.unshift(entry)
+  return entry
 }

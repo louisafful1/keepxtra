@@ -2,11 +2,13 @@ import { useState } from 'react'
 import { Camera } from 'lucide-react'
 import { Modal, formInputClass, formLabelClass } from '@/components/portal/Modal'
 import { useCreateInspection, useInventory } from '@/hooks/useAdminQueries'
+import { useToast } from '@/hooks/useToast'
 import type { InspectionOutcome } from '@/types/admin'
 
 export function InspectionModal({ open, onClose }: { open: boolean; onClose: () => void }) {
   const { data: inventory } = useInventory()
   const { mutate, isPending } = useCreateInspection()
+  const toast = useToast()
   const pendingItems = inventory?.filter((i) => i.status === 'Pending Inspection') ?? []
 
   const [form, setForm] = useState({
@@ -32,6 +34,10 @@ export function InspectionModal({ open, onClose }: { open: boolean; onClose: () 
       },
       {
         onSuccess: () => {
+          toast('Inspection saved', {
+            variant: form.outcome === 'Rejected' ? 'error' : 'success',
+            description: `Outcome: ${form.outcome}`,
+          })
           setForm({ inventoryItemId: '', inspector: '', grade: 'A', outcome: 'Approved', notes: '', acceptedQuantityKg: 0 })
           onClose()
         },
