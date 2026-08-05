@@ -14,6 +14,8 @@ export interface IUser extends Document {
   emailVerifiedAt: Date | null
   lastLoginAt: Date | null
   passwordChangedAt: Date | null
+  /** Bumped on password change/reset — any access token signed before the bump is rejected by `authenticate`, giving instant "log out everywhere". */
+  tokenVersion: number
   isDeleted: boolean
   deletedAt: Date | null
   createdBy: Types.ObjectId | null
@@ -44,6 +46,7 @@ const userSchema = new Schema<IUser>(
     emailVerifiedAt: { type: Date, default: null },
     lastLoginAt: { type: Date, default: null },
     passwordChangedAt: { type: Date, default: null },
+    tokenVersion: { type: Number, default: 0 },
   },
   { timestamps: true },
 )

@@ -13,8 +13,10 @@ export interface RoleDefinition {
 /**
  * The default role set, mirroring the frontend's `ROLE_PERMISSIONS` matrix
  * (`src/types/permissions.ts`) plus a `Farmer` role for the farmer-facing
- * side of the app. Data only — seeded into the `roles`/`permissions`
- * collections by a future seed script, not read by any running module yet.
+ * side of the app. Data only. The `Farmer` role, in particular, is
+ * lazily created by `FarmerService` the first time a farmer is registered
+ * (see `farmer.repository.ts`'s `ensureFarmerRole`) rather than by a
+ * separate seed step — there's no seed script yet.
  */
 export const ROLE_DEFINITIONS: RoleDefinition[] = [
   { name: 'Farmer', scope: 'farmer', description: 'Farmer portal access — scoped to their own data.', permissions: [] },
@@ -24,8 +26,10 @@ export const ROLE_DEFINITIONS: RoleDefinition[] = [
     scope: 'operations',
     description: 'Oversees day-to-day operations across every module except payment configuration and role management.',
     permissions: [
-      'farmers.view',
-      'farmers.manage',
+      'farmers.create',
+      'farmers.read',
+      'farmers.update',
+      'farmers.delete',
       'storage-requests.review',
       'pickups.manage',
       'warehouses.manage',
@@ -45,7 +49,9 @@ export const ROLE_DEFINITIONS: RoleDefinition[] = [
     scope: 'operations',
     description: 'Runs storage requests, pickups, inventory, and sales.',
     permissions: [
-      'farmers.view',
+      'farmers.create',
+      'farmers.read',
+      'farmers.update',
       'storage-requests.review',
       'pickups.manage',
       'inventory.view',

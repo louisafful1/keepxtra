@@ -18,17 +18,17 @@ function extractBearerToken(req: Request): string | null {
  * current role + permissions (fetched fresh from the database rather than
  * trusted from the token, so a permission change takes effect on the very
  * next request instead of waiting for token refresh).
- *
- * Infrastructure only — not wired to any route yet, since no auth module
- * or business routes exist. Ready for the future auth/module work to use.
  */
 export const authenticate = asyncHandler(async (req: Request, _res: Response, next: NextFunction) => {
   const token = extractBearerToken(req)
   if (!token) throw ApiError.unauthorized('No access token provided')
 
   let userId: string
+  let tokenVersion: number
   try {
-    userId = verifyAccessToken(token).sub
+    const payload = verifyAccessToken(token)
+    userId = payload.sub
+    tokenVersion = payload.tokenVersion
   } catch (error) {
     authLogger.warn({ err: error }, 'Access token verification failed')
     throw ApiError.unauthorized('Invalid or expired access token')
@@ -38,6 +38,13 @@ export const authenticate = asyncHandler(async (req: Request, _res: Response, ne
   if (!user) throw ApiError.unauthorized('User no longer exists')
   if (user.status !== 'Active') throw ApiError.forbidden('Account is not active')
 
+  // A password change/reset bumps `tokenVersion` — any token signed before
+  // that bump (even if not yet expired) is a stale credential and must be
+  // rejected. This is what makes "log out everywhere" actually instant.
+  if (tokenVersion !== user.tokenVersion) {
+    throw ApiError.unauthorized('Session is no longer valid — please log in again')
+  }
+
   const role = user.roleId as unknown as IRole
   const permissions = (role.permissions as unknown as IPermission[]).map((permission) => permission.key)
 
@@ -45,6 +52,10 @@ export const authenticate = asyncHandler(async (req: Request, _res: Response, ne
     id: user._id.toString(),
     email: user.email,
     name: user.name,
+    phone: user.phone,
+    avatarInitials: user.avatarInitials,
+    status: user.status,
+    emailVerifiedAt: user.emailVerifiedAt,
     roleId: role._id.toString(),
     roleName: role.name,
     permissions,

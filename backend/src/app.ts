@@ -12,6 +12,12 @@ import { notFoundHandler } from './middlewares/notFoundHandler'
 import { errorHandler } from './middlewares/errorHandler'
 import { healthRouter } from './routes/health.routes'
 import { apiRouter } from './routes'
+// Side-effect import — registers every Mongoose model (`mongoose.model(name, schema)`)
+// on module load. Without this, a model that's only ever referenced via
+// `import type` (as populate targets like Role/Permission are, e.g. in
+// auth.service.ts) never actually gets registered, and the first
+// `.populate()` call throws `MissingSchemaError` at runtime.
+import './models'
 
 export function createApp(): Application {
   const app = express()

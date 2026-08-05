@@ -19,6 +19,9 @@ const envSchema = z.object({
     .default('http://localhost:5173')
     .transform((value) => value.split(',').map((origin) => origin.trim())),
 
+  /** Base URL of the frontend — used to build password-reset / email-verification links. */
+  FRONTEND_URL: z.string().url().default('http://localhost:5173'),
+
   MONGODB_URI: z.string().url('MONGODB_URI must be a valid connection string'),
   MONGODB_URI_TEST: z.string().url().optional(),
 

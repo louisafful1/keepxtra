@@ -1,9 +1,9 @@
 /**
- * The canonical permission catalogue, mirroring the frontend's
- * `src/types/permissions.ts` plus the `fleet.manage` / `drivers.manage`
- * additions flagged in the SAD (§6.9). This is data, not logic — the
- * `permissions` collection is seeded from this list by a future seed
- * script; no business/auth module reads this file directly yet.
+ * The canonical permission catalogue. `PermissionKey` is what
+ * `requirePermission(...)` accepts, so this file grows one entry at a time
+ * as each business module ships — the Farmers module is the first to
+ * actually enforce its keys (`farmers.create/read/update/delete`) end to
+ * end; earlier entries are reserved for modules still to come.
  */
 export interface PermissionDefinition {
   key: string
@@ -12,8 +12,10 @@ export interface PermissionDefinition {
 }
 
 export const PERMISSIONS = [
-  { key: 'farmers.view', module: 'Farmers', description: 'View the farmer directory' },
-  { key: 'farmers.manage', module: 'Farmers', description: 'Register, suspend, and reactivate farmers' },
+  { key: 'farmers.create', module: 'Farmers', description: 'Register new farmers' },
+  { key: 'farmers.read', module: 'Farmers', description: 'View the farmer directory and individual profiles' },
+  { key: 'farmers.update', module: 'Farmers', description: 'Edit farmer profiles and toggle active/inactive status' },
+  { key: 'farmers.delete', module: 'Farmers', description: 'Soft-delete and restore farmer records' },
   { key: 'storage-requests.review', module: 'Storage', description: 'Approve, reject, or request info on storage requests' },
   { key: 'pickups.manage', module: 'Pickups', description: 'Approve pickups and assign drivers/vehicles' },
   { key: 'warehouses.manage', module: 'Warehouses', description: 'Manage warehouses and cold rooms' },
