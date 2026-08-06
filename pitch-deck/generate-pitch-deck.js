@@ -3,13 +3,13 @@ const fs = require('fs')
 const path = require('path')
 
 // This script lives in <project-root>/pitch-deck, and borrows the Inter font
-// files already installed for the website itself (@fontsource/inter is a
-// dependency of the main app, so no font files are duplicated here).
-const FONT_DIR = path.join(__dirname, '..', 'node_modules', '@fontsource', 'inter', 'files')
+// files already installed for the frontend app (@fontsource/inter is a
+// dependency of the frontend, so no font files are duplicated here).
+const FONT_DIR = path.join(__dirname, '..', 'frontend', 'node_modules', '@fontsource', 'inter', 'files')
 const OUT_PATH = path.join(__dirname, 'KeepXtra-Pitch-Deck.pdf')
 // The site's "Request Pitch Deck" buttons link straight to this file, so every
 // regeneration also refreshes the public copy the browser actually serves.
-const PUBLIC_PATH = path.join(__dirname, '..', 'public', 'KeepXtra-Pitch-Deck.pdf')
+const PUBLIC_PATH = path.join(__dirname, '..', 'frontend', 'public', 'KeepXtra-Pitch-Deck.pdf')
 
 // ---------- Slide geometry (16:9, PowerPoint-standard points) ----------
 const W = 960
