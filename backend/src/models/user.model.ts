@@ -16,6 +16,9 @@ export interface IUser extends Document {
   passwordChangedAt: Date | null
   /** Bumped on password change/reset — any access token signed before the bump is rejected by `authenticate`, giving instant "log out everywhere". */
   tokenVersion: number
+  /** Brute-force lockout — consecutive bad-password attempts since the last success/reset; reset to 0 on either. See `LOGIN_MAX_ATTEMPTS`/`LOGIN_LOCKOUT_MINUTES` in env.ts and `auth.service.ts#login`. */
+  failedLoginAttempts: number
+  lockedUntil: Date | null
   isDeleted: boolean
   deletedAt: Date | null
   createdBy: Types.ObjectId | null
@@ -47,6 +50,8 @@ const userSchema = new Schema<IUser>(
     lastLoginAt: { type: Date, default: null },
     passwordChangedAt: { type: Date, default: null },
     tokenVersion: { type: Number, default: 0 },
+    failedLoginAttempts: { type: Number, default: 0 },
+    lockedUntil: { type: Date, default: null },
   },
   { timestamps: true },
 )

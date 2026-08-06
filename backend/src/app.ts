@@ -10,6 +10,10 @@ import { swaggerSpec } from './config/swagger'
 import { requestLogger } from './middlewares/requestLogger'
 import { notFoundHandler } from './middlewares/notFoundHandler'
 import { errorHandler } from './middlewares/errorHandler'
+import { sanitizeRequest } from './middlewares/sanitize'
+import { globalRateLimiter } from './middlewares/rateLimit'
+import { recordMetrics } from './middlewares/metrics'
+import { metricsRegistry } from './config/metrics'
 import { healthRouter } from './routes/health.routes'
 import { apiRouter } from './routes'
 // Side-effect import — registers every Mongoose model (`mongoose.model(name, schema)`)
@@ -41,9 +45,11 @@ export function createApp(): Application {
   app.use(express.json({ limit: '1mb' }))
   app.use(express.urlencoded({ extended: true, limit: '1mb' }))
   app.use(cookieParser(env.COOKIE_SECRET))
+  app.use(sanitizeRequest)
 
   // Structured, always-on request logging (Pino — see config/logger.ts).
   app.use(requestLogger)
+  app.use(recordMetrics)
 
   // Human-readable one-line-per-request console output for local
   // development only; Pino above is the system of record in every
@@ -56,7 +62,14 @@ export function createApp(): Application {
   // hit this directly, not through the API version prefix.
   app.use('/health', healthRouter)
 
-  app.use(env.API_PREFIX, apiRouter)
+  // Prometheus scrape target — unauthenticated by convention (see docs/security);
+  // restrict network access to it at the infra level in production.
+  app.get('/metrics', async (_req, res) => {
+    res.setHeader('Content-Type', metricsRegistry.contentType)
+    res.send(await metricsRegistry.metrics())
+  })
+
+  app.use(env.API_PREFIX, globalRateLimiter, apiRouter)
 
   app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec, { customSiteTitle: 'KeepXtra API Docs' }))
   app.get('/docs.json', (_req, res) => res.json(swaggerSpec))

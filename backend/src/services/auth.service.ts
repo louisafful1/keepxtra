@@ -4,6 +4,8 @@ import { refreshTokenRepository } from '../repositories/refreshToken.repository'
 import { passwordResetTokenRepository } from '../repositories/passwordResetToken.repository'
 import { emailVerificationTokenRepository } from '../repositories/emailVerificationToken.repository'
 import { mailService } from './mail.service'
+import { auditService } from './audit.service'
+import { loadActor } from '../utils/systemActor'
 import { hashPassword, comparePassword } from '../utils/password'
 import { generateOpaqueToken, hashToken } from '../utils/crypto'
 import { signAccessToken, getTokenExpiryMs } from '../utils/jwt'
@@ -19,6 +21,7 @@ import {
 import type { IUser } from '../models/user.model'
 import type { IRole } from '../models/role.model'
 import type { IPermission } from '../models/permission.model'
+import type { AuthenticatedUser } from '../interfaces/auth.interface'
 import type { LoginResultDto, RefreshResultDto, SafeUserDto } from '../types/auth.dto'
 
 export interface RequestMeta {
@@ -45,6 +48,25 @@ function toSafeUserDto(user: IUser): SafeUserDto {
     status: user.status,
     emailVerifiedAt: user.emailVerifiedAt,
     role: { id: role._id.toString(), name: role.name, permissions },
+  }
+}
+
+/** Builds the audit-log actor view from a user document already populated with its role (as `findByEmailForLogin` returns) — avoids a second DB round trip via `loadActor`. */
+function actorFromUser(user: IUser): AuthenticatedUser {
+  const role = user.roleId as unknown as IRole
+  const permissions = (role.permissions as unknown as IPermission[]).map((permission) => permission.key)
+
+  return {
+    id: user._id.toString(),
+    email: user.email,
+    name: user.name,
+    phone: user.phone,
+    avatarInitials: user.avatarInitials,
+    status: user.status,
+    emailVerifiedAt: user.emailVerifiedAt,
+    roleId: role._id.toString(),
+    roleName: role.name,
+    permissions,
   }
 }
 
@@ -86,14 +108,55 @@ async function login(
   meta: RequestMeta,
 ): Promise<IssuedTokens<LoginResultDto>> {
   const user = await userRepository.findByEmailForLogin(input.email)
-  const passwordMatches = user ? await comparePassword(input.password, user.passwordHash) : false
 
-  if (!user || !passwordMatches) {
-    authLogger.warn({ email: input.email }, 'Login failed — invalid credentials')
+  if (!user) {
+    // No matching account at all — nothing to attribute a lockout/audit entry to; the generic warning below is all there is to log.
+    authLogger.warn({ email: input.email }, 'Login failed — no matching account')
+    throw ApiError.unauthorized('Invalid email or password')
+  }
+
+  if (user.lockedUntil && user.lockedUntil.getTime() > Date.now()) {
+    await auditService.record({
+      actor: actorFromUser(user),
+      action: 'Login Blocked — Account Locked',
+      entityType: 'User',
+      entityId: user._id.toString(),
+      affectedRecord: user.email,
+      newValue: `Locked until ${user.lockedUntil.toISOString()}`,
+      ip: meta.ip,
+    })
+    throw ApiError.forbidden('Too many failed login attempts. Please try again later.')
+  }
+
+  // A lock that has already expired is a clean slate — clear it before evaluating this attempt.
+  if (user.lockedUntil) {
+    await userRepository.resetLoginAttempts(user._id.toString())
+    user.failedLoginAttempts = 0
+    user.lockedUntil = null
+  }
+
+  const passwordMatches = await comparePassword(input.password, user.passwordHash)
+
+  if (!passwordMatches) {
+    const { count, justLocked } = await userRepository.registerFailedLogin(user._id.toString(), env.LOGIN_MAX_ATTEMPTS, env.LOGIN_LOCKOUT_MINUTES)
+    authLogger.warn({ userId: user._id.toString(), attempts: count, locked: justLocked }, 'Login failed — invalid password')
+    await auditService.record({
+      actor: actorFromUser(user),
+      action: justLocked ? 'Account Locked (too many failed logins)' : 'Login Failed — Invalid Password',
+      entityType: 'User',
+      entityId: user._id.toString(),
+      affectedRecord: user.email,
+      newValue: `Attempt ${count} of ${env.LOGIN_MAX_ATTEMPTS}`,
+      ip: meta.ip,
+    })
     throw ApiError.unauthorized('Invalid email or password')
   }
 
   assertLoginEligible(user)
+
+  if (user.failedLoginAttempts > 0) {
+    await userRepository.resetLoginAttempts(user._id.toString())
+  }
 
   const accessToken = signAccessToken({ sub: user._id.toString(), tokenVersion: user.tokenVersion })
   const ttlMs = input.rememberMe === false ? REFRESH_TOKEN_TTL_REMEMBER_ME_FALSE_MS : REFRESH_TOKEN_TTL_MS
@@ -101,6 +164,14 @@ async function login(
 
   await userRepository.touchLastLogin(user._id.toString())
   authLogger.info({ userId: user._id.toString() }, 'Login succeeded')
+  await auditService.record({
+    actor: actorFromUser(user),
+    action: 'Login Succeeded',
+    entityType: 'User',
+    entityId: user._id.toString(),
+    affectedRecord: user.email,
+    ip: meta.ip,
+  })
 
   return {
     result: { user: toSafeUserDto(user), accessToken, expiresAt: getTokenExpiryMs(accessToken) },
@@ -176,7 +247,18 @@ async function resetPassword(rawToken: string, newPassword: string): Promise<voi
   await userRepository.setPassword(userId, await hashPassword(newPassword))
   await passwordResetTokenRepository.markUsed(tokenDoc._id.toString())
   await refreshTokenRepository.revokeAllForUser(userId)
+  await userRepository.resetLoginAttempts(userId)
   authLogger.info({ userId }, 'Password reset — all sessions revoked')
+
+  const actor = await loadActor(userId)
+  await auditService.record({
+    actor,
+    action: 'Password Reset',
+    entityType: 'User',
+    entityId: userId,
+    affectedRecord: actor.email,
+    newValue: 'All sessions revoked',
+  })
 }
 
 async function changePassword(userId: string, currentPassword: string, newPassword: string): Promise<void> {
@@ -189,6 +271,16 @@ async function changePassword(userId: string, currentPassword: string, newPasswo
   await userRepository.setPassword(userId, await hashPassword(newPassword))
   await refreshTokenRepository.revokeAllForUser(userId)
   authLogger.info({ userId }, 'Password changed — all sessions revoked')
+
+  const actor = await loadActor(userId)
+  await auditService.record({
+    actor,
+    action: 'Password Changed',
+    entityType: 'User',
+    entityId: userId,
+    affectedRecord: actor.email,
+    newValue: 'All sessions revoked',
+  })
 }
 
 async function verifyEmail(rawToken: string): Promise<void> {

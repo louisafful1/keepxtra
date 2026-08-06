@@ -97,5 +97,8 @@ orderSchema.plugin(auditablePlugin)
 orderSchema.index({ status: 1, createdAt: -1 })
 orderSchema.index({ customerId: 1 })
 orderSchema.index({ 'items.farmerId': 1 })
+// Supports report.repository.ts's revenue-trend/dashboard aggregations, which
+// $match on status + a confirmedAt range rather than createdAt.
+orderSchema.index({ status: 1, confirmedAt: -1 })
 
 export const Order = model<IOrder>('Order', orderSchema)

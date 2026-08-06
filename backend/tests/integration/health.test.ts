@@ -21,6 +21,30 @@ describe('GET /health/ready', () => {
   })
 })
 
+describe('GET /metrics', () => {
+  it('exposes Prometheus-format metrics, including this request itself', async () => {
+    // A prior request in this file already recorded at least one sample under this label.
+    await request(testApp).get('/health')
+
+    const res = await request(testApp).get('/metrics')
+
+    expect(res.status).toBe(200)
+    expect(res.headers['content-type']).toContain('text/plain')
+    expect(res.text).toContain('http_requests_total')
+    expect(res.text).toContain('http_request_duration_seconds')
+    expect(res.text).toMatch(/method="GET",route="\/health"/)
+  })
+
+  it('labels an unmatched route as "unmatched" rather than the raw path', async () => {
+    await request(testApp).get('/this-route-does-not-exist-either')
+
+    const res = await request(testApp).get('/metrics')
+
+    expect(res.text).toMatch(/route="unmatched"/)
+    expect(res.text).not.toContain('this-route-does-not-exist-either')
+  })
+})
+
 describe('unmatched routes', () => {
   it('returns a consistent 404 error envelope', async () => {
     const res = await request(testApp).get('/this-route-does-not-exist')

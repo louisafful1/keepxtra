@@ -10,6 +10,7 @@ import { qualityInspectionRepository } from '../repositories/qualityInspection.r
 import { storageRequestRepository } from '../repositories/storageRequest.repository'
 import { vehicleMaintenanceRecordRepository } from '../repositories/vehicleMaintenanceRecord.repository'
 import { vehicleFuelRecordRepository } from '../repositories/vehicleFuelRecord.repository'
+import { cache } from '../utils/cache'
 import type { CsvCellValue } from '../utils/csv'
 import type {
   DashboardSummaryDto,
@@ -224,7 +225,18 @@ async function getInspectionReport(): Promise<ReportResult<InspectionReportDto>>
   }
 }
 
+const DASHBOARD_CACHE_KEY = 'dashboard-summary'
+const DASHBOARD_CACHE_TTL_SECONDS = 30
+
 async function getDashboardSummary(): Promise<DashboardSummaryDto> {
+  // The dashboard aggregates across nine collections on every call — worth a
+  // short cache. 30s means the homepage can be up to 30s stale, which is a
+  // fine trade for a summary widget; every other report stays fully live.
+  // A no-op passthrough (always live) when Redis isn't configured.
+  return cache.getOrSet(DASHBOARD_CACHE_KEY, DASHBOARD_CACHE_TTL_SECONDS, computeDashboardSummary)
+}
+
+async function computeDashboardSummary(): Promise<DashboardSummaryDto> {
   const startOfMonth = new Date()
   startOfMonth.setDate(1)
   startOfMonth.setHours(0, 0, 0, 0)

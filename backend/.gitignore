@@ -1,10 +1,12 @@
 node_modules/
 dist/
 coverage/
+backups/
 
 .env
-.env.local
-.env.*.local
+.env.*
+!.env.example
+!.env.*.example
 
 *.log
 npm-debug.log*

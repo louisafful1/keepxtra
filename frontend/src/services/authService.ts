@@ -1,74 +1,143 @@
 import type { AuthSession, AuthUser, LoginCredentials } from '@/types/auth'
-import { ApiError, simulateRequest } from '@/services/simulateRequest'
+import { ApiError } from '@/services/simulateRequest'
 
-const SESSION_TTL_MS = 1000 * 60 * 60 * 8 // 8 hours
+/**
+ * Real backend calls, replacing the mock account directory this file used
+ * to hold. `credentials: 'include'` on every call is what lets the browser
+ * send/receive the httpOnly refresh-token cookie the backend sets on login
+ * (see backend/src/utils/cookies.ts) — the backend's CORS config already
+ * allows this (`credentials: true`) for `CORS_ORIGIN`.
+ */
+const API_BASE_URL = import.meta.env.VITE_API_URL ?? 'http://localhost:4000/api/v1'
 
-interface DemoAccount {
-  password: string
-  user: AuthUser
+/** Shape of `role` on POST /auth/login and POST /auth/refresh's paired user data — see backend/src/types/auth.dto.ts#SafeUserDto. */
+interface BackendRole {
+  id: string
+  name: string
+  permissions: string[]
+}
+
+interface BackendLoginUser {
+  id: string
+  name: string
+  email: string
+  avatarInitials: string
+  role: BackendRole
+}
+
+interface BackendLoginData {
+  user: BackendLoginUser
+  accessToken: string
+  expiresAt: number
+}
+
+interface BackendRefreshData {
+  accessToken: string
+  expiresAt: number
 }
 
 /**
- * Stand-in user directory. A real backend would validate credentials
- * server-side and issue a signed JWT — this fakes both.
+ * Shape of GET /auth/me — the backend returns `req.user` there (the
+ * `AuthenticatedUser` request-scoped view), which is flat (`roleName`)
+ * rather than login/refresh's nested `role: {name, ...}` object. Two real,
+ * slightly different response shapes for "the current user" — not a
+ * frontend bug, an existing backend API inconsistency worth normalizing
+ * here rather than in every caller.
  */
-const demoAccounts: Record<string, DemoAccount> = {
-  'farmer@keepxtra.com': {
-    password: 'password123',
-    user: {
-      id: 'farmer-001',
-      name: 'Kwame Asante',
-      email: 'farmer@keepxtra.com',
-      role: 'farmer',
-      avatarInitials: 'KA',
-    },
-  },
-  'admin@keepxtra.com': {
-    password: 'admin123',
-    user: {
-      id: 'admin-001',
-      name: 'Ama Serwaa',
-      email: 'admin@keepxtra.com',
-      role: 'admin',
-      avatarInitials: 'AS',
-    },
-  },
+interface BackendCurrentUser {
+  id: string
+  name: string
+  email: string
+  avatarInitials: string
+  roleName: string
 }
 
-function createMockToken(user: AuthUser) {
-  // Not a real JWT — just a base64 payload that looks like one, so the
-  // shape (header.payload.signature) matches what a real API would return.
-  const header = btoa(JSON.stringify({ alg: 'none', typ: 'MOCK' }))
-  const payload = btoa(JSON.stringify({ sub: user.id, role: user.role, iat: Date.now() }))
-  return `${header}.${payload}.mock-signature`
+interface ApiErrorBody {
+  error?: { message?: string }
+}
+
+/**
+ * Every non-2xx response from the backend uses this envelope
+ * (`{ success: false, error: { message, code } }`) — surface the real
+ * message so callers (AuthContext, forms) show the backend's actual
+ * validation/auth error instead of a generic one.
+ */
+async function parseResponse<T>(res: Response): Promise<T> {
+  const body: unknown = await res.json().catch(() => null)
+
+  if (!res.ok) {
+    const message = (body as ApiErrorBody | null)?.error?.message ?? 'Something went wrong. Please try again.'
+    throw new ApiError(message, res.status)
+  }
+
+  return (body as { data: T }).data
+}
+
+/**
+ * The frontend's `AuthUser.role` is a binary `'farmer' | 'admin'` that
+ * drives which portal shell to render — the backend's real RBAC model has
+ * many operations role *names* (Manager, Operations, Finance, ...) that all
+ * map to the same admin shell here. Fine-grained permission gating within
+ * the admin portal (`usePermissions`) is unaffected by this and unchanged.
+ */
+function toAuthUser(user: { id: string; name: string; email: string; avatarInitials: string }, roleName: string): AuthUser {
+  return {
+    id: user.id,
+    name: user.name,
+    email: user.email,
+    role: roleName === 'Farmer' ? 'farmer' : 'admin',
+    avatarInitials: user.avatarInitials,
+  }
 }
 
 async function login(credentials: LoginCredentials): Promise<AuthSession> {
-  const account = demoAccounts[credentials.email.trim().toLowerCase()]
+  const res = await fetch(`${API_BASE_URL}/auth/login`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    credentials: 'include',
+    body: JSON.stringify(credentials),
+  })
+  const data = await parseResponse<BackendLoginData>(res)
 
-  if (!account || account.password !== credentials.password) {
-    return simulateRequest(null, 500).then(() => {
-      throw new ApiError('Invalid email or password.', 401)
-    })
+  return {
+    user: toAuthUser(data.user, data.user.role.name),
+    token: data.accessToken,
+    expiresAt: data.expiresAt,
   }
-
-  const session: AuthSession = {
-    user: account.user,
-    token: createMockToken(account.user),
-    expiresAt: Date.now() + SESSION_TTL_MS,
-  }
-
-  return simulateRequest(session)
 }
 
 async function logout(): Promise<void> {
-  return simulateRequest(undefined, 200)
+  await fetch(`${API_BASE_URL}/auth/logout`, { method: 'POST', credentials: 'include' })
 }
 
-/** Simulates a "verify token" call a real backend would expose. */
-async function validateSession(session: AuthSession): Promise<AuthSession | null> {
-  if (session.expiresAt < Date.now()) return simulateRequest(null, 150)
-  return simulateRequest(session, 150)
+/**
+ * Restores a session on app load. The stored access token has almost
+ * certainly already expired by the time this runs (15-minute default
+ * lifetime vs. up to 30 days of "remember me" persistence) — rather than
+ * checking the stale `expiresAt` first, this always attempts a silent
+ * refresh via the httpOnly cookie, then fetches the current user with the
+ * fresh token. Any failure (expired/revoked refresh token, network error)
+ * is treated as "no session" — the caller falls back to the login page.
+ */
+async function validateSession(_session: AuthSession): Promise<AuthSession | null> {
+  try {
+    const refreshRes = await fetch(`${API_BASE_URL}/auth/refresh`, { method: 'POST', credentials: 'include' })
+    const refreshData = await parseResponse<BackendRefreshData>(refreshRes)
+
+    const meRes = await fetch(`${API_BASE_URL}/auth/me`, {
+      headers: { Authorization: `Bearer ${refreshData.accessToken}` },
+      credentials: 'include',
+    })
+    const currentUser = await parseResponse<BackendCurrentUser>(meRes)
+
+    return {
+      user: toAuthUser(currentUser, currentUser.roleName),
+      token: refreshData.accessToken,
+      expiresAt: refreshData.expiresAt,
+    }
+  } catch {
+    return null
+  }
 }
 
 export const authService = {

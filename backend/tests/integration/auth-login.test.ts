@@ -3,6 +3,8 @@ import request from 'supertest'
 import { testApp } from '../utils/testApp'
 import { createActiveUser, DEFAULT_TEST_PASSWORD } from '../utils/factories'
 import { User } from '../../src/models/user.model'
+import { RefreshToken } from '../../src/models/refreshToken.model'
+import { REFRESH_TOKEN_TTL_MS, REFRESH_TOKEN_TTL_REMEMBER_ME_FALSE_MS } from '../../src/constants/auth'
 
 describe('POST /api/v1/auth/login', () => {
   it('logs in successfully with the correct email and password', async () => {
@@ -54,6 +56,21 @@ describe('POST /api/v1/auth/login', () => {
     expect(cookie).toMatch(/HttpOnly/)
     expect(cookie).toMatch(/SameSite=Strict/)
     expect(cookie).toMatch(/Path=\/api\/v1\/auth/)
+  })
+
+  it('issues a shorter-lived refresh token when rememberMe is explicitly false', async () => {
+    const { user } = await createActiveUser({ email: 'kwame@keepxtra.com' })
+
+    const res = await request(testApp)
+      .post('/api/v1/auth/login')
+      .send({ email: 'kwame@keepxtra.com', password: DEFAULT_TEST_PASSWORD, rememberMe: false })
+
+    expect(res.status).toBe(200)
+    const token = await RefreshToken.findOne({ userId: user._id }).exec()
+    const ttlMs = token!.expiresAt.getTime() - Date.now()
+    // Comfortably inside the 7-day window and clearly short of the 30-day default.
+    expect(ttlMs).toBeLessThan(REFRESH_TOKEN_TTL_REMEMBER_ME_FALSE_MS + 60_000)
+    expect(ttlMs).toBeLessThan(REFRESH_TOKEN_TTL_MS - 1000)
   })
 
   it('records lastLoginAt', async () => {

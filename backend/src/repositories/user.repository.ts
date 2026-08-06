@@ -50,6 +50,24 @@ export class UserRepository extends BaseRepository<IUser> {
   async touchLastLogin(id: string): Promise<void> {
     await this.model.updateOne({ _id: id }, { $set: { lastLoginAt: new Date() } }).exec()
   }
+
+  /** Atomically bumps the bad-password counter and locks the account once it reaches `maxAttempts`. Returns the new count and whether this call is what tripped the lock. */
+  async registerFailedLogin(id: string, maxAttempts: number, lockoutMinutes: number): Promise<{ count: number; justLocked: boolean }> {
+    const updated = await this.model.findOneAndUpdate({ _id: id }, { $inc: { failedLoginAttempts: 1 } }, { returnDocument: 'after' }).exec()
+    if (!updated) return { count: 0, justLocked: false }
+
+    if (updated.failedLoginAttempts >= maxAttempts && !updated.lockedUntil) {
+      const lockedUntil = new Date(Date.now() + lockoutMinutes * 60_000)
+      await this.model.updateOne({ _id: id }, { $set: { lockedUntil } }).exec()
+      return { count: updated.failedLoginAttempts, justLocked: true }
+    }
+    return { count: updated.failedLoginAttempts, justLocked: false }
+  }
+
+  /** Clears lockout state — called on a successful login and whenever an expired lock is encountered. */
+  async resetLoginAttempts(id: string): Promise<void> {
+    await this.model.updateOne({ _id: id }, { $set: { failedLoginAttempts: 0, lockedUntil: null } }).exec()
+  }
 }
 
 export const userRepository = new UserRepository()

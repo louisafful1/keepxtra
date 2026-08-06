@@ -61,7 +61,7 @@ orderRouter.use(requirePermission('sales.create'))
  *       401: { description: Not authenticated. }
  *       403: { description: "Missing the sales.create permission." }
  *       404: { description: Customer or inventory record not found. }
- *       409: { description: An item is unavailable, un-valued, or insufficiently stocked. }
+ *       409: { description: "An item is unavailable, un-valued, or insufficiently stocked." }
  *       422: { description: Request body failed validation. }
  */
 orderRouter.post('/', validateRequest({ body: createOrderSchema }), createOrder)
@@ -205,7 +205,7 @@ orderRouter.patch('/:id', validateRequest({ params: mongoIdParamSchema, body: up
  *       401: { description: Not authenticated. }
  *       403: { description: "Missing the sales.create permission." }
  *       404: { description: Order not found. }
- *       409: { description: The order is not in a state that can be confirmed, or an item is no longer available. }
+ *       409: { description: "The order is not in a state that can be confirmed, or an item is no longer available." }
  */
 orderRouter.post('/:id/confirm', validateRequest({ params: mongoIdParamSchema }), confirmOrder)
 

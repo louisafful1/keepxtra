@@ -4,6 +4,7 @@ import mongoose from 'mongoose'
 import { ApiError } from '../utils/ApiError'
 import { logger } from '../config/logger'
 import { isProduction } from '../config/env'
+import { reportError } from '../utils/errorTracking'
 
 interface NormalizedError {
   statusCode: number
@@ -55,6 +56,7 @@ export function errorHandler(error: unknown, req: Request, res: Response, _next:
     log.warn(logPayload, normalized.message)
   } else {
     log.error(logPayload, 'Unhandled error')
+    reportError(error, { requestId: req.id, method: req.method, path: req.path })
   }
 
   res.status(normalized.statusCode).json({

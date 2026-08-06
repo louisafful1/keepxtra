@@ -2,7 +2,7 @@
 
 The public marketing site, farmer portal, and operations/admin dashboard for KeepXtra — a single Vite + React + TypeScript app with three route surfaces.
 
-> Currently runs against an in-memory mock service layer, not the real backend — see [../docs/deployment](../docs/deployment/README.md#frontendbackend-integration-status).
+> `authService` now calls the real backend (login/logout/session restore); `farmerService`/`adminService` still run against an in-memory mock service layer — see [../docs/deployment](../docs/deployment/README.md#frontendbackend-integration-status).
 
 ## Tech stack
 
@@ -46,7 +46,7 @@ src/
 ├── components/      ui/, layout/, portal/ — shared UI building blocks
 ├── contexts/        AuthContext
 ├── hooks/           Data-fetching hooks (useAdminQueries, useFarmerQueries, ...) and utility hooks
-├── services/        authService / farmerService / adminService — the API contract layer (currently mocked, see note above)
+├── services/        authService (wired to the real backend) / farmerService / adminService (still mocked, see note above)
 ├── animation/        GSAP/Lenis scroll setup
 ├── data/            Static content for the marketing site
 ├── lib/ / utils/     Small shared helpers
@@ -59,4 +59,6 @@ src/
 
 ## Backend integration
 
-The `src/services/{auth,farmer,admin}Service.ts` modules define the exact contract the real backend (`../backend/`) is built to satisfy — see [../docs/api](../docs/api/README.md). Wiring a given screen to the live API is a matter of replacing that service's mock implementation with a real HTTP call against the same function signature.
+The `src/services/{auth,farmer,admin}Service.ts` modules define the exact contract the real backend (`../backend/`) is built to satisfy — see [../docs/api](../docs/api/README.md). `authService.ts` now calls the real API (set `VITE_API_URL` — see `.env.example` — to point it somewhere other than `http://localhost:4000/api/v1`); wiring `farmerService`/`adminService` is the same pattern (replace the mock implementation with a real `fetch` call against the same exported function signatures) — see `authService.ts` as the reference implementation, including how it bridges the backend's real RBAC role names onto the frontend's existing `'farmer' | 'admin'` routing model without changing that model.
+
+**Note:** the "Demo accounts" hint text on the login page (`farmer@keepxtra.com` / `admin@keepxtra.com`) refers to the old mock accounts. Those exact credentials won't work against a real backend unless you seed matching accounts (`npm run seed` in `backend/`, or create them directly) — update or remove that hint once wiring the rest of the app to the live API.

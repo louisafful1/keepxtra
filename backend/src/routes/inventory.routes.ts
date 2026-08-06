@@ -196,7 +196,7 @@ inventoryRouter.get(
  *       400: { description: The cold room does not belong to the given warehouse. }
  *       401: { description: Not authenticated. }
  *       403: { description: "Missing the inventory.manage permission." }
- *       404: { description: Inventory record, warehouse, or cold room not found. }
+ *       404: { description: "Inventory record, warehouse, or cold room not found." }
  *       409: { description: The record is not in a state that can be received. }
  *       422: { description: Request body failed validation. }
  */
@@ -239,7 +239,7 @@ inventoryRouter.post(
  *       401: { description: Not authenticated. }
  *       403: { description: "Missing the inventory.manage permission." }
  *       404: { description: Inventory record not found. }
- *       409: { description: The record is not in a state that can be adjusted, or the adjustment is invalid. }
+ *       409: { description: "The record is not in a state that can be adjusted, or the adjustment is invalid." }
  *       422: { description: Request body failed validation. }
  */
 inventoryRouter.patch(
@@ -276,7 +276,7 @@ inventoryRouter.patch(
  *       400: { description: The cold room does not belong to the given warehouse. }
  *       401: { description: Not authenticated. }
  *       403: { description: "Missing the inventory.manage permission." }
- *       404: { description: Inventory record, warehouse, or cold room not found. }
+ *       404: { description: "Inventory record, warehouse, or cold room not found." }
  *       409: { description: The record is not in a state that can be transferred. }
  *       422: { description: Request body failed validation. }
  */

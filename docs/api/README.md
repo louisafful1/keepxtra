@@ -8,7 +8,8 @@ The KeepXtra backend exposes a versioned REST API under `/api/v1`, documented li
 |---|---|
 | `GET /docs` | Interactive Swagger UI |
 | `GET /docs.json` | Raw OpenAPI 3 spec (importable into Postman/Insomnia) |
-| `GET /health` | Liveness/readiness probe (unversioned, outside `/api/v1`) |
+| `GET /health`, `GET /health/ready` | Liveness/readiness probes (unversioned, outside `/api/v1`) |
+| `GET /metrics` | Prometheus-format application metrics (unversioned) — see [security](../security/README.md) before exposing this publicly |
 
 Run the backend locally (see [deployment guide](../deployment/README.md#backend)) and open `http://localhost:4000/docs`.
 
@@ -20,6 +21,7 @@ Run the backend locally (see [deployment guide](../deployment/README.md#backend)
 - **Errors:** `{ success: false, error: { message, code, details? } }` with a matching HTTP status (400/401/403/404/409/422/500).
 - **Pagination/filtering/sorting:** list endpoints share a common query vocabulary — `page`, `pageSize`, `search`, `sortBy`, `sortDir`, `from`/`to` date range, plus resource-specific filters.
 - **Reports export:** report endpoints under `/api/v1/reports/*` accept `?format=json|csv|pdf` to switch the response between the default JSON payload and a downloadable CSV/PDF file.
+- **Rate limits:** every `/api/v1/*` request is rate-limited, with a tighter ceiling on `/api/v1/auth/*`; a limited request gets `429` with standard `RateLimit-*` headers. See [security](../security/README.md#rate-limiting).
 
 ## Modules
 

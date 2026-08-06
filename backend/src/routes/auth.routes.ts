@@ -1,6 +1,7 @@
 import { Router } from 'express'
 import { validateRequest } from '../middlewares/validateRequest'
 import { authenticate } from '../middlewares/authenticate'
+import { authRateLimiter } from '../middlewares/rateLimit'
 import {
   changePassword,
   forgotPassword,
@@ -22,6 +23,10 @@ import {
 } from '../validators/auth.validators'
 
 export const authRouter = Router()
+
+// Tighter ceiling than the rest of the API — this is the surface credential
+// stuffing / brute-force / account-enumeration attempts actually hit.
+authRouter.use(authRateLimiter)
 
 /**
  * @openapi

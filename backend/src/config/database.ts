@@ -6,9 +6,25 @@ mongoose.set('strictQuery', true)
 
 const MAX_CONNECT_ATTEMPTS = 5
 const RETRY_DELAY_MS = 2000
+/** Above this, a query is logged as slow — see `attachSlowQueryLogging`. Tuned for an interactive API, not a batch job. */
+const SLOW_QUERY_THRESHOLD_MS = 200
 
 function delay(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms))
+}
+
+/**
+ * Logs any MongoDB command that takes longer than `SLOW_QUERY_THRESHOLD_MS`
+ * — driver-level command monitoring, so this catches slow queries issued
+ * through Mongoose *and* any raw aggregation (e.g. `report.repository.ts`)
+ * alike, without instrumenting every call site individually.
+ */
+function attachSlowQueryLogging(connection: typeof mongoose): void {
+  connection.connection.getClient().on('commandSucceeded', (event) => {
+    if (event.duration >= SLOW_QUERY_THRESHOLD_MS) {
+      dbLogger.warn({ command: event.commandName, durationMs: event.duration, database: event.databaseName }, 'Slow MongoDB query')
+    }
+  })
 }
 
 /**
@@ -23,8 +39,9 @@ export async function connectDatabase(): Promise<typeof mongoose> {
   for (let attempt = 1; attempt <= MAX_CONNECT_ATTEMPTS; attempt += 1) {
     try {
       dbLogger.info({ attempt, maxAttempts: MAX_CONNECT_ATTEMPTS }, 'Connecting to MongoDB...')
-      const connection = await mongoose.connect(uri)
-      dbLogger.info({ host: connection.connection.host, name: connection.connection.name }, 'MongoDB connected')
+      const connection = await mongoose.connect(uri, { maxPoolSize: env.MONGODB_MAX_POOL_SIZE, monitorCommands: true })
+      dbLogger.info({ host: connection.connection.host, name: connection.connection.name, maxPoolSize: env.MONGODB_MAX_POOL_SIZE }, 'MongoDB connected')
+      attachSlowQueryLogging(connection)
       return connection
     } catch (error) {
       dbLogger.error({ err: error, attempt }, 'MongoDB connection attempt failed')
