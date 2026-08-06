@@ -20,6 +20,15 @@ beforeAll(async () => {
   // Defender scans a freshly-downloaded mongod.exe — give it real headroom.
   mongoServer = await MongoMemoryServer.create({ instance: { launchTimeout: 60000 } })
   await mongoose.connect(mongoServer.getUri())
+
+  // `mongoose.connect()` resolving does NOT mean every model's indexes
+  // exist yet — index creation is queued and fires in the background per
+  // model. Without waiting here, a test file whose very first write is a
+  // uniqueness check can race that build and observe no constraint at all
+  // (a duplicate insert silently succeeds). Waiting once, up front, makes
+  // every unique/partial-unique index test deterministic regardless of
+  // which `it` block happens to run first in a given file.
+  await Promise.all(Object.values(mongoose.models).map((model) => model.init()))
 })
 
 afterEach(async () => {

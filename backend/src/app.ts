@@ -18,8 +18,11 @@ import { apiRouter } from './routes'
 // auth.service.ts) never actually gets registered, and the first
 // `.populate()` call throws `MissingSchemaError` at runtime.
 import './models'
+import { registerAllEventListeners } from './events/registerListeners'
 
 export function createApp(): Application {
+  registerAllEventListeners()
+
   const app = express()
 
   // Express sits behind a load balancer/reverse proxy in every real
