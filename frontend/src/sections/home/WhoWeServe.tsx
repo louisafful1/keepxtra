@@ -30,7 +30,7 @@ export function WhoWeServe() {
             <motion.div key={segment.title} variants={fadeUp} className="group flex flex-col gap-4">
               <ImageSlot
                 src={segment.image}
-                alt={segment.title}
+                alt={segment.imageAlt}
                 icon={segment.icon}
                 aspectRatio="square"
                 rounded="2xl"

@@ -2,8 +2,18 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="color-scheme" content="light" />
+    <link rel="icon" type="image/svg+xml" href="/favicon-keepxtra.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style>
+      /* Paint a light canvas before the CSS bundle / React app loads. */
+      html,
+      body {
+        margin: 0;
+        background-color: #fafafa;
+        color-scheme: light;
+      }
+    </style>
     <title>KeepXtra — Powering Africa's Fresh Produce Supply Chain</title>
     <meta
       name="description"

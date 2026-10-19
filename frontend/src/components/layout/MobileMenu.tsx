@@ -65,12 +65,6 @@ export function MobileMenu({ onClose }: MobileMenuProps) {
         </nav>
 
         <div className="mt-auto flex flex-col gap-3 pt-10">
-          <Button to="/login" variant="ghost" className="w-full justify-center">
-            Farmer Login
-          </Button>
-          <Button to="/contact" variant="secondary" className="w-full justify-center">
-            Become a Partner
-          </Button>
           <Button to="/contact" variant="primary" className="w-full justify-center" icon>
             Request a Delivery
           </Button>

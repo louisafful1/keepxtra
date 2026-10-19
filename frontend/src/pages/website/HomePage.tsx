@@ -3,7 +3,6 @@ import { buildSeo } from '@/lib/seo'
 import { Hero } from '@/sections/home/Hero'
 import { TrustBar } from '@/sections/home/TrustBar'
 import { ProblemStats } from '@/sections/home/ProblemStats'
-import { SolutionTimeline } from '@/sections/home/SolutionTimeline'
 import { Services } from '@/sections/home/Services'
 import { WhoWeServe } from '@/sections/home/WhoWeServe'
 import { WhyKeepXtra } from '@/sections/home/WhyKeepXtra'
@@ -29,7 +28,6 @@ export default function HomePage() {
       <Hero />
       <TrustBar />
       <ProblemStats />
-      <SolutionTimeline />
       <Services />
       <WhoWeServe />
       <WhyKeepXtra />

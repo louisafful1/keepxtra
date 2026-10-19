@@ -5,6 +5,7 @@ import { z } from 'zod'
 import { motion } from 'framer-motion'
 import { ArrowRight, Check } from 'lucide-react'
 import { cn } from '@/lib/cn'
+import { formErrorMessage, subscribeToNewsletter } from '@/lib/emailjs'
 
 const newsletterSchema = z.object({
   email: z.string().min(1, 'Email is required').email('Enter a valid email address'),
@@ -14,6 +15,7 @@ type NewsletterValues = z.infer<typeof newsletterSchema>
 
 export function NewsletterForm() {
   const [submitted, setSubmitted] = useState(false)
+  const [submitError, setSubmitError] = useState<string | null>(null)
   const {
     register,
     handleSubmit,
@@ -21,10 +23,15 @@ export function NewsletterForm() {
     formState: { errors, isSubmitting },
   } = useForm<NewsletterValues>({ resolver: zodResolver(newsletterSchema) })
 
-  async function onSubmit() {
-    await new Promise((resolve) => setTimeout(resolve, 600))
-    setSubmitted(true)
-    reset()
+  async function onSubmit(values: NewsletterValues) {
+    setSubmitError(null)
+    try {
+      await subscribeToNewsletter(values.email)
+      setSubmitted(true)
+      reset()
+    } catch (error) {
+      setSubmitError(formErrorMessage(error))
+    }
   }
 
   if (submitted) {
@@ -59,12 +66,15 @@ export function NewsletterForm() {
         </button>
       </div>
       <p
+        role={submitError ? 'alert' : undefined}
         className={cn(
-          'mt-2 min-h-[1.25rem] pl-5 text-xs text-secondary-400 transition-opacity',
-          errors.email ? 'opacity-100' : 'opacity-0',
+          'mt-2 min-h-[1.25rem] pl-5 text-xs transition-opacity',
+          errors.email || submitError
+            ? 'text-secondary-500 opacity-100'
+            : 'text-secondary-400 opacity-0',
         )}
       >
-        {errors.email?.message}
+        {errors.email?.message ?? submitError}
       </p>
     </form>
   )

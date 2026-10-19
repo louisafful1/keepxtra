@@ -2,10 +2,14 @@ export interface TeamMember {
   name: string
   role: string
   bio: string
+  /** Optional headshot path, relative to /public. Falls back to an icon avatar. */
+  photo?: string
+  /** Optional zoom for wide-cropped shots so faces fill the avatar evenly. 1 = default. */
+  photoZoom?: number
 }
 
 /**
- * Photos still pending — swap in headshots via MeetTheTeam.tsx once available.
+ * Photos still pending for the remaining members — add `photo` once available.
  */
 export const teamMembers: TeamMember[] = [
   {
@@ -14,18 +18,16 @@ export const teamMembers: TeamMember[] = [
     bio: 'Leads the company vision and drives KeepXtra’s mission to build reliable food infrastructure for Africa.',
   },
   {
-    name: 'Joseph Maison',
-    role: 'Co-Founder & Chief Operating Officer',
-    bio: 'Oversees day-to-day operations across storage, quality assurance, and logistics.',
-  },
-  {
     name: 'Louis Afful',
     role: 'Head of Technology',
     bio: 'Builds the software and data systems that power inventory, routing, and quality tracking.',
+    photo: '/team/louis.jpg',
+    photoZoom: 1.55,
   },
   {
-    name: 'Dennis Konadu',
-    role: 'Head of Logistics & Cold Chain',
-    bio: 'Manages the storage facilities and delivery network that keep produce fresh, farm to doorstep.',
+    name: 'Helena Yaa Kyei',
+    role: 'Business Development',
+    bio: 'Builds partnerships and market access that help farmers store, sell, and earn more from their produce.',
+    photo: '/team/Helina.jpeg',
   },
 ]

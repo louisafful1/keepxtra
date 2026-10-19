@@ -2,7 +2,6 @@ import type { ReactNode } from 'react'
 import { motion } from 'framer-motion'
 import { cn } from '@/lib/cn'
 import { fadeUp, staggerContainer, viewportOnce } from '@/animation/variants'
-import { Badge } from '@/components/ui/Badge'
 
 interface SectionHeadingProps {
   eyebrow?: string
@@ -34,14 +33,17 @@ export function SectionHeading({
       )}
     >
       {eyebrow && (
-        <motion.div variants={fadeUp}>
-          <Badge>{eyebrow}</Badge>
-        </motion.div>
+        <motion.p
+          variants={fadeUp}
+          className="text-xs font-semibold uppercase tracking-[0.18em] text-secondary-600"
+        >
+          {eyebrow}
+        </motion.p>
       )}
       <motion.h2
         variants={fadeUp}
         className={cn(
-          'text-balance text-4xl font-medium leading-[1.1] text-primary-800 sm:text-5xl',
+          'text-balance text-4xl font-bold leading-[1.08] tracking-[-0.02em] text-neutral-900 sm:text-5xl',
           titleClassName,
         )}
       >

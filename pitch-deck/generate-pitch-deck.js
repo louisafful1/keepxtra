@@ -16,7 +16,7 @@ const W = 960
 const H = 540
 const MARGIN = 56
 
-// ---------- Brand palette (matches the live site — green + gold, no red/orange) ----------
+// ---------- Brand palette (matches the live site — green, with an orange X accent) ----------
 const C = {
   bg: '#FFFFFF',
   bgTint: '#F7FCF9',
@@ -31,6 +31,7 @@ const C = {
   primary50: '#F0FDF4',
   gold: '#CA8A04',
   goldLight: '#FEF3C7',
+  accent: '#F97316',
   ink: '#0F172A',
   slate600: '#475569',
   slate500: '#64748B',
@@ -79,28 +80,20 @@ function newSlide({ bg = C.white } = {}) {
 function brandMark(x, y, opts = {}) {
   const size = opts.size || 20
   const dark = opts.dark
-  doc.save()
-  doc.roundedRect(x, y, size, size, size * 0.32).fill(dark ? C.primary300 : C.primary600)
-  const cx = x + size / 2
-  const topY = y + size * 0.22
-  const botY = y + size * 0.82
-  doc.strokeColor(dark ? C.primary800 : C.white).lineWidth(size * 0.09).lineCap('round')
-  doc.moveTo(cx, botY).lineTo(cx, topY).stroke()
-  doc
-    .moveTo(cx, topY + size * 0.16)
-    .bezierCurveTo(cx - size * 0.28, topY, cx - size * 0.3, topY + size * 0.32, cx, topY + size * 0.34)
-    .stroke()
-  doc
-    .moveTo(cx, topY + size * 0.16)
-    .bezierCurveTo(cx + size * 0.28, topY, cx + size * 0.3, topY + size * 0.32, cx, topY + size * 0.34)
-    .stroke()
-  doc.restore()
+  const fontSize = size * 0.66
+  const baseColor = dark ? C.white : C.primary700
+  const xColor = C.accent
+
+  doc.font('SemiBold').fontSize(fontSize)
+  doc.fillColor(baseColor).text('Keep', x, y + size * 0.16, { lineBreak: false })
+  const keepWidth = doc.widthOfString('Keep')
+
+  doc.fillColor(xColor).text('X', x + keepWidth, y + size * 0.16, { lineBreak: false })
+  const xWidth = doc.widthOfString('X')
 
   doc
-    .font('SemiBold')
-    .fontSize(size * 0.62)
-    .fillColor(dark ? C.white : C.ink)
-    .text('KeepXtra', x + size + 10, y + size * 0.2, { lineBreak: false })
+    .fillColor(baseColor)
+    .text('tra', x + keepWidth + xWidth, y + size * 0.16, { lineBreak: false })
 }
 
 function footer(n, opts = {}) {
@@ -441,9 +434,8 @@ const impactPillars = [
 
 const team = [
   { name: 'Hamilton Maison', role: 'Founder & Chief Executive Officer' },
-  { name: 'Joseph Maison', role: 'Co-Founder & Chief Operating Officer' },
   { name: 'Louis Afful', role: 'Head of Technology' },
-  { name: 'Dennis Konadu', role: 'Head of Logistics & Cold Chain' },
+  { name: 'Helena Yaa Kyei', role: 'Business Development' },
 ]
 
 const useOfFunds = [

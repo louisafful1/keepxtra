@@ -28,19 +28,19 @@ interface ButtonAsLink extends BaseProps {
 type ButtonProps = ButtonAsButton | ButtonAsLink
 
 const variantStyles: Record<ButtonVariant, string> = {
-  primary: 'bg-primary-500 text-white shadow-glow hover:bg-primary-600',
+  primary: 'bg-primary-700 text-white shadow-glow hover:bg-primary-800',
   secondary:
-    'border border-primary-500 text-primary-600 bg-white hover:bg-primary-50',
+    'border border-neutral-200 text-neutral-900 bg-white hover:border-neutral-300 hover:bg-neutral-50',
   ghost: 'text-neutral-700 hover:bg-neutral-100',
 }
 
 const sizeStyles: Record<ButtonSize, string> = {
   md: 'px-6 py-3 text-sm',
-  lg: 'px-8 py-4 text-base',
+  lg: 'px-7 py-4 text-base',
 }
 
 const baseStyles =
-  'inline-flex items-center justify-center gap-2 rounded-full font-medium transition-colors duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2'
+  'inline-flex items-center justify-center gap-2 rounded-xl font-semibold transition-colors duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-600 focus-visible:ring-offset-2'
 
 export function Button(props: ButtonProps) {
   const { variant = 'primary', size = 'md', children, className, icon = false } = props

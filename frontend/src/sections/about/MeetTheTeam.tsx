@@ -22,14 +22,29 @@ export function MeetTheTeam() {
           initial="hidden"
           whileInView="show"
           viewport={viewportOnce}
-          className="mt-14 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4"
+          className="mt-14 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3"
         >
           {teamMembers.map((member) => (
             <motion.div key={member.name} variants={fadeUp}>
               <Card className="flex h-full flex-col items-center gap-4 text-center">
-                <span className="flex size-20 items-center justify-center rounded-full bg-primary-50 text-primary-500">
-                  <User className="size-9" strokeWidth={1.5} />
-                </span>
+                {member.photo ? (
+                  <div className="size-20 shrink-0 overflow-hidden rounded-full border border-neutral-200">
+                    <img
+                      src={member.photo}
+                      alt={member.name}
+                      loading="lazy"
+                      className="size-full object-cover"
+                      style={{
+                        transform: `scale(${member.photoZoom ?? 1})`,
+                        transformOrigin: '50% 20%',
+                      }}
+                    />
+                  </div>
+                ) : (
+                  <span className="flex size-20 items-center justify-center rounded-full bg-primary-50 text-primary-500">
+                    <User className="size-9" strokeWidth={1.5} />
+                  </span>
+                )}
                 <div>
                   <h3 className="font-display text-base font-medium text-neutral-900">{member.name}</h3>
                   <p className="mt-0.5 text-sm font-medium text-primary-600">{member.role}</p>

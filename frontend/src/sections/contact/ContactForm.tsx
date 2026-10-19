@@ -5,6 +5,7 @@ import { z } from 'zod'
 import { motion } from 'framer-motion'
 import { Check, Loader2 } from 'lucide-react'
 import { cn } from '@/lib/cn'
+import { formErrorMessage, sendContactMessage } from '@/lib/emailjs'
 
 const contactSchema = z.object({
   name: z.string().min(1, 'Your name is required'),
@@ -28,6 +29,7 @@ const fieldClasses =
 
 export function ContactForm() {
   const [submitted, setSubmitted] = useState(false)
+  const [submitError, setSubmitError] = useState<string | null>(null)
   const {
     register,
     handleSubmit,
@@ -38,10 +40,23 @@ export function ContactForm() {
     defaultValues: { subject: 'general' },
   })
 
-  async function onSubmit() {
-    await new Promise((resolve) => setTimeout(resolve, 700))
-    setSubmitted(true)
-    reset()
+  async function onSubmit(values: ContactValues) {
+    setSubmitError(null)
+    try {
+      await sendContactMessage({
+        name: values.name,
+        email: values.email,
+        phone: values.phone,
+        subject:
+          subjectOptions.find((option) => option.value === values.subject)?.label ??
+          values.subject,
+        message: values.message,
+      })
+      setSubmitted(true)
+      reset()
+    } catch (error) {
+      setSubmitError(formErrorMessage(error))
+    }
   }
 
   if (submitted) {
@@ -135,6 +150,15 @@ export function ContactForm() {
         />
         {errors.message && <p className="mt-1.5 text-xs text-secondary-500">{errors.message.message}</p>}
       </div>
+
+      {submitError && (
+        <p
+          role="alert"
+          className="rounded-2xl border border-secondary-200 bg-secondary-50 px-4 py-3 text-sm text-secondary-700"
+        >
+          {submitError}
+        </p>
+      )}
 
       <button
         type="submit"

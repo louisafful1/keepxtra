@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
+  <rect width="64" height="64" rx="14" fill="#166534"/>
+  <g transform="translate(13.5 13.5) scale(0.37)" fill="#F97316" fill-rule="evenodd">
+    <path d="M6 94 C 23 52 53 22 94 6 C 78 48 48 78 6 94 Z
+             M54 46 C 60 40 70 30 78 22 C 72 34 62 44 54 46 Z
+             M46 54 C 40 60 30 70 22 78 C 28 66 38 56 46 54 Z"/>
+    <path d="M94 94 C 77 52 47 22 6 6 C 22 48 52 78 94 94 Z
+             M46 46 C 40 40 30 30 22 22 C 28 34 38 44 46 46 Z
+             M54 54 C 60 60 70 70 78 78 C 72 66 62 56 54 54 Z"/>
+  </g>
+</svg>

@@ -1,19 +1,19 @@
 # KeepXtra Frontend
 
-The public marketing site, farmer portal, and operations/admin dashboard for KeepXtra — a single Vite + React + TypeScript app with three route surfaces.
+The KeepXtra public marketing website — a single Vite + React + TypeScript app.
 
-> `authService` now calls the real backend (login/logout/session restore); `farmerService`/`adminService` still run against an in-memory mock service layer — see [../docs/deployment](../docs/deployment/README.md#frontendbackend-integration-status).
+> The farmer portal and operations/admin dashboard have been removed from this repository. They will live in the separate **XtraStore** product, served from its own domain with its own backend.
 
 ## Tech stack
 
 - **React 19** + **TypeScript** (strict)
 - **Vite** — dev server & build
-- **React Router** — routing (`src/routes/`), including a lazy-loaded, `ProtectedRoute`-gated admin/portal area
+- **React Router** — routing (`src/routes/`)
 - **Tailwind CSS** — styling (`tailwind.config.ts`)
-- **TanStack Query** — server-state/data-fetching layer over the service modules
 - **React Hook Form** + **Zod** — forms and validation
+- **EmailJS** — contact form & newsletter submission (`@emailjs/browser`)
 - **Framer Motion**, **GSAP**, **Lenis** — animation and smooth scroll
-- **Recharts** — dashboard/analytics charts
+- **react-helmet-async** — per-page SEO tags
 - **oxlint** — linting
 
 ## Getting started
@@ -36,29 +36,39 @@ npm run dev       # http://localhost:5173
 
 ```
 src/
-├── pages/
-│   ├── website/   Public marketing site (home, about, services, investors, blog, ...)
-│   ├── auth/       Login
-│   ├── portal/     Farmer-facing portal (produce, storage requests, pickups, sales, payments, ...)
-│   └── admin/       Operations/admin dashboard (farmers, inventory, warehouses, fleet, sales, reports, ...)
-├── layouts/         WebsiteLayout, PortalLayout, AdminLayout
-├── routes/          Router config + ProtectedRoute
-├── components/      ui/, layout/, portal/ — shared UI building blocks
-├── contexts/        AuthContext
-├── hooks/           Data-fetching hooks (useAdminQueries, useFarmerQueries, ...) and utility hooks
-├── services/        authService (wired to the real backend) / farmerService / adminService (still mocked, see note above)
+├── pages/website/   Public marketing pages (home, about, services, partners, investors, blog, faq, careers, contact)
+├── sections/         Composed page sections
+├── layouts/          WebsiteLayout
+├── routes/           Router config
+├── components/       ui/ (design system) and layout/ (navbar, footer, mobile menu, ...)
 ├── animation/        GSAP/Lenis scroll setup
-├── data/            Static content for the marketing site
-├── lib/ / utils/     Small shared helpers
-└── types/            Shared TypeScript types, incl. the RBAC permission model
+├── data/             Static content for the marketing site
+├── hooks/            Small UI/animation hooks
+├── lib/              Shared helpers (cn, seo, countup)
+└── styles/           Global styles
 ```
 
 ## Path alias
 
 `@/*` resolves to `src/*` (configured in both `vite.config.ts` and `tsconfig.app.json`).
 
-## Backend integration
+## Environment variables
 
-The `src/services/{auth,farmer,admin}Service.ts` modules define the exact contract the real backend (`../backend/`) is built to satisfy — see [../docs/api](../docs/api/README.md). `authService.ts` now calls the real API (set `VITE_API_URL` — see `.env.example` — to point it somewhere other than `http://localhost:4000/api/v1`); wiring `farmerService`/`adminService` is the same pattern (replace the mock implementation with a real `fetch` call against the same exported function signatures) — see `authService.ts` as the reference implementation, including how it bridges the backend's real RBAC role names onto the frontend's existing `'farmer' | 'admin'` routing model without changing that model.
+The contact and newsletter forms send through [EmailJS](https://www.emailjs.com/). Copy
+`.env.example` to `.env` and fill in your credentials:
 
-**Note:** the "Demo accounts" hint text on the login page (`farmer@keepxtra.com` / `admin@keepxtra.com`) refers to the old mock accounts. Those exact credentials won't work against a real backend unless you seed matching accounts (`npm run seed` in `backend/`, or create them directly) — update or remove that hint once wiring the rest of the app to the live API.
+| Variable | Purpose |
+|---|---|
+| `VITE_EMAILJS_PUBLIC_KEY` | EmailJS public key (Account page) |
+| `VITE_EMAILJS_SERVICE_ID` | The EmailJS email service to send through |
+| `VITE_EMAILJS_CONTACT_TEMPLATE_ID` | Template for contact-form messages |
+| `VITE_EMAILJS_NEWSLETTER_TEMPLATE_ID` | Template for newsletter sign-ups |
+
+Template variables the app sends — make sure each template references them:
+
+- **Contact:** `from_name`, `reply_to`, `phone`, `subject`, `message`
+- **Newsletter:** `from_name`, `reply_to`, `email`
+
+> Vite inlines these at build time, so they must be present in the environment that runs
+> `npm run build` (e.g. your host's build settings), not just locally. Without them the
+> forms show a clear "not configured" error instead of silently failing.

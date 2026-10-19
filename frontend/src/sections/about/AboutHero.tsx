@@ -20,13 +20,14 @@ export function AboutHero() {
           className="flex flex-col gap-6"
         >
           <motion.div variants={fadeUp}>
-            <Badge>Our Story</Badge>
+            <Badge>About KeepXtra</Badge>
           </motion.div>
           <motion.h1
             variants={fadeUp}
-            className="text-balance font-display text-4xl font-medium leading-[1.1] text-primary-800 sm:text-5xl lg:text-[3.25rem]"
+            className="text-balance font-display text-4xl font-bold leading-[1.06] tracking-[-0.02em] text-neutral-900 sm:text-5xl lg:text-[3.25rem]"
           >
-            Building the future of <span className="text-primary-500">Africa&apos;s fresh produce supply chain.</span>
+            We&apos;re building what fresh produce needs to{' '}
+            <span className="text-primary-700">survive the journey.</span>
           </motion.h1>
           <motion.p variants={fadeUp} className="max-w-lg text-lg leading-relaxed text-neutral-600">
             Every year, millions of tonnes of food are lost across Africa before they ever
@@ -38,7 +39,8 @@ export function AboutHero() {
 
         <motion.div variants={slideRight} initial="hidden" animate="show">
           <ImageSlot
-            alt="KeepXtra field team with partner farmers and fresh produce"
+            src="/images/segments/farmers.jpg"
+            alt="Partner farmers bagging harvested produce in northern Ghana"
             label="Farmers & Fresh Produce"
             icon={Users}
             aspectRatio="video"

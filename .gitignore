@@ -12,7 +12,7 @@ dist
 dist-ssr
 *.local
 
-# Frontend env files (backend has its own, stricter .gitignore)
+# Environment files
 .env
 .env.*
 !.env.example

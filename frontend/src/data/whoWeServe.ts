@@ -14,17 +14,56 @@ export interface Segment {
   icon: LucideIcon
   title: string
   image: string
+  imageAlt: string
 }
 
-const unsplash = (id: string) => `https://images.unsplash.com/photo-${id}?w=600&q=75&auto=format&fit=crop`
-
 export const segments: Segment[] = [
-  { icon: Sprout, title: 'Farmers', image: unsplash('1605000797499-95a51c5269ae') },
-  { icon: Store, title: 'Market Traders', image: unsplash('1488459716781-31db52582fe9') },
-  { icon: UtensilsCrossed, title: 'Restaurants', image: unsplash('1555396273-367ea4eb4db5') },
-  { icon: Building2, title: 'Hotels', image: unsplash('1621293954908-907159247fc8') },
-  { icon: ShoppingBag, title: 'Retailers', image: unsplash('1604719312566-8912e9227c6a') },
-  { icon: School, title: 'Schools', image: unsplash('1551218372-a8789b81b253') },
-  { icon: HeartPulse, title: 'Hospitals', image: unsplash('1495433923968-85c6751d2df6') },
-  { icon: Home, title: 'Households', image: unsplash('1760445529436-25510c869789') },
+  {
+    icon: Sprout,
+    title: 'Farmers',
+    image: '/images/segments/farmers.jpg',
+    imageAlt: 'Farmers bagging freshly harvested grain in northern Ghana',
+  },
+  {
+    icon: Store,
+    title: 'Market Traders',
+    image: '/images/segments/market-traders.jpg',
+    imageAlt: 'Market trader carrying a basket of fresh peppers in Accra',
+  },
+  {
+    icon: UtensilsCrossed,
+    title: 'Restaurants',
+    image: '/images/segments/restaurants.jpg',
+    imageAlt: 'Restaurant interior in Accra with carved Ghanaian wall art',
+  },
+  {
+    icon: Building2,
+    title: 'Hotels',
+    image: '/images/segments/hotels.jpg',
+    imageAlt: 'Hotel lodge entrance in Ada Foah, Ghana',
+  },
+  {
+    icon: ShoppingBag,
+    title: 'Retailers',
+    image: '/images/segments/retailers.jpg',
+    imageAlt: 'Produce vendor arranging tomatoes and greens at a Ghanaian market stall',
+  },
+  {
+    icon: School,
+    title: 'Schools',
+    image: '/images/segments/schools.jpg',
+    imageAlt: 'Schoolchildren in uniform outside a school in Ghana',
+  },
+  {
+    icon: HeartPulse,
+    title: 'Hospitals',
+    image: '/images/segments/hospitals.jpg',
+    imageAlt: 'Hospital ward room in Accra, Ghana',
+  },
+  {
+    icon: Home,
+    title: 'Households',
+    image: '/images/segments/households.jpg',
+    imageAlt: 'Women preparing a family meal outdoors in Ajumako, Central Ghana',
+  },
 ]
