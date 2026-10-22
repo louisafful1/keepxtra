@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react'
-import { ArrowRight, Check, Droplets, PackageCheck, Truck } from 'lucide-react'
+import { Check, Droplets, PackageCheck, Truck } from 'lucide-react'
 import { gsap } from '@/animation/gsapConfig'
 import { prefersReducedMotion } from '@/hooks/useReducedMotion'
 import { Container } from '@/components/ui/Container'

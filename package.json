@@ -5,7 +5,7 @@
   "description": "KeepXtra monorepo — website (frontend) and investor pitch deck.",
   "scripts": {
     "dev": "npm --prefix frontend run dev",
-    "build": "npm --prefix frontend run build",
+    "build": "npm --prefix frontend install --include=dev && npm --prefix frontend run build",
     "preview": "npm --prefix frontend run preview",
     "lint": "npm --prefix frontend run lint",
     "deck": "npm --prefix pitch-deck run build"
