@@ -51,6 +51,7 @@ export function MobileMenu({ onClose }: MobileMenuProps) {
             >
               <RouterNavLink
                 to={link.to}
+                end={link.end}
                 className={({ isActive }) =>
                   cn(
                     'block rounded-xl px-4 py-3 text-lg font-medium text-neutral-700 transition-colors hover:bg-white hover:text-neutral-900',

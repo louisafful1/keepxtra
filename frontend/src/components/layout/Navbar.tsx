@@ -42,6 +42,7 @@ export function Navbar() {
               <RouterNavLink
                 key={link.to}
                 to={link.to}
+                end={link.end}
                 className={({ isActive }) =>
                   cn(
                     'rounded-full px-4 py-2 text-sm font-medium text-neutral-600 transition-colors duration-200 hover:bg-neutral-900/5 hover:text-neutral-900',
