@@ -6,7 +6,6 @@ import { ProblemStats } from '@/sections/home/ProblemStats'
 import { Services } from '@/sections/home/Services'
 import { WhoWeServe } from '@/sections/home/WhoWeServe'
 import { WhyKeepXtra } from '@/sections/home/WhyKeepXtra'
-import { ImpactCounters } from '@/sections/home/ImpactCounters'
 import { InvestorHighlight } from '@/sections/home/InvestorHighlight'
 import { Sustainability } from '@/sections/home/Sustainability'
 import { Testimonials } from '@/sections/home/Testimonials'
@@ -31,7 +30,6 @@ export default function HomePage() {
       <Services />
       <WhoWeServe />
       <WhyKeepXtra />
-      <ImpactCounters />
       <InvestorHighlight />
       <Sustainability />
       <Testimonials />
