@@ -11,5 +11,6 @@ export const navLinks: NavLink[] = [
   { label: 'Services', to: '/services' },
   { label: 'Partners', to: '/partners' },
   { label: 'Investors', to: '/investors' },
+  { label: 'FAQ', to: '/faq' },
   { label: 'Contact', to: '/contact' },
 ]
