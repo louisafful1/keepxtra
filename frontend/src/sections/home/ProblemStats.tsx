@@ -69,7 +69,7 @@ export function ProblemStats() {
                 Produce travels for hours in open un-refrigerated trucks, sits in hot
                 open-air markets, and passes through multiple informal middlemen — so a
                 significant share spoils before it ever reaches a buyer. FAO estimates
-                around 23% of food is lost in sub-Saharan Africa before retail.
+                around 27.3% of food is lost in Western Africa before retail.
               </p>
             </div>
             <ul className="flex flex-col gap-3.5">

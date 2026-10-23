@@ -12,8 +12,8 @@ export interface ProblemChallenge {
 }
 
 export const problemStat: ProblemStat = {
-  value: '23%',
-  label: 'of food is lost in sub-Saharan Africa before it reaches retail.',
+  value: '27.3%',
+  label: 'of food is lost in Western Africa before it reaches retail.',
   source: 'FAO, SDG Indicator 12.3.1 (2024)',
 }
 
