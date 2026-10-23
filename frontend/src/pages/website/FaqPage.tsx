@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { Helmet } from 'react-helmet-async'
 import { motion } from 'framer-motion'
 import { ChevronDown } from 'lucide-react'
 import { Container } from '@/components/ui/Container'
@@ -11,8 +12,21 @@ import { fadeUp, staggerContainer } from '@/animation/variants'
 export default function FaqPage() {
   const [openIndex, setOpenIndex] = useState<number | null>(0)
 
+  const faqSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: faqs.map((faq) => ({
+      '@type': 'Question',
+      name: faq.question,
+      acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+    })),
+  }
+
   return (
     <>
+      <Helmet>
+        <script type="application/ld+json">{JSON.stringify(faqSchema)}</script>
+      </Helmet>
       <Seo
         title="Frequently Asked Questions"
         description="Answers for farmers, buyers, and partners about how KeepXtra works — storage, delivery, quality, coverage, and how to get started."
