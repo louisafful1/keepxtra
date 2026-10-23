@@ -1,6 +1,7 @@
 import { AnimatePresence, motion } from 'framer-motion'
 import { Outlet, useLocation } from 'react-router-dom'
 import { LenisProvider } from '@/animation/LenisProvider'
+import { ScrollToTop } from '@/animation/ScrollToTop'
 import { Navbar } from '@/components/layout/Navbar'
 import { Footer } from '@/components/layout/Footer'
 
@@ -9,6 +10,7 @@ export function WebsiteLayout() {
 
   return (
     <LenisProvider>
+      <ScrollToTop />
       <Navbar />
       <AnimatePresence mode="wait">
         <motion.main
