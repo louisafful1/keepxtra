@@ -10,8 +10,8 @@ export interface ImpactStat {
 }
 
 export const impactStats: ImpactStat[] = [
-  { value: 2500, suffix: '+', label: 'Tonnes of food saved from waste', icon: Leaf },
-  { value: 100, suffix: '+', label: 'Farmers supported', icon: Users },
-  { value: 350, suffix: '+', label: 'Businesses served', icon: Building2 },
-  { value: 40000, suffix: '+', label: 'Deliveries completed', icon: Truck, accent: true },
+  { value: 0, label: 'Tonnes of food saved from waste', icon: Leaf },
+  { value: 0, label: 'Farmers supported', icon: Users },
+  { value: 0, label: 'Businesses served', icon: Building2 },
+  { value: 0, label: 'Deliveries completed', icon: Truck, accent: true },
 ]

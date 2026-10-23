@@ -9,7 +9,7 @@ export function AboutImpact() {
   return (
     <section className="bg-tint-green py-24">
       <Container>
-        <SectionHeading eyebrow="Our Impact" title="Progress you can measure." align="center" />
+        <SectionHeading eyebrow="Our Impact" title="Our journey starts here." align="center" />
 
         <motion.div
           variants={staggerContainer(0.1)}

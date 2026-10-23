@@ -10,7 +10,6 @@ const heroStats = [
   { value: '~0%', label: 'Avoidable Loss Goal', tone: 'text-primary-700' },
   { value: '24/7', label: 'Telemetry Cold Monitoring', tone: 'text-secondary-600' },
   { value: '8-Step', label: 'Quality Pipeline', tone: 'text-primary-700' },
-  { value: '100+', label: 'Farmers Supported', tone: 'text-neutral-900' },
 ]
 
 export function Hero() {
@@ -93,7 +92,7 @@ export function Hero() {
             </Button>
           </div>
 
-          <div className="hero-stats grid grid-cols-2 gap-x-6 gap-y-5 border-t border-primary-900/10 pt-7 sm:grid-cols-4">
+          <div className="hero-stats grid grid-cols-2 gap-x-6 gap-y-5 border-t border-primary-900/10 pt-7 sm:grid-cols-3">
             {heroStats.map((stat) => (
               <div key={stat.label} className="flex flex-col gap-1">
                 <p className={`font-display text-2xl font-bold tracking-tight ${stat.tone}`}>

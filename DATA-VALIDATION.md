@@ -24,20 +24,27 @@ single source of truth for tracking that.
 
 ## 2. Claim inventory
 
-### A. Company traction & capability (must match our real operating data)
+### A. Company traction & capability
+
+> **Baseline (2026-10): company is pre-launch — all traction metrics are set to 0.**
+> Replace with verified operating data once available; never show aspirational numbers as actuals.
 
 | Claim | Value shown | Location |
 |---|---|---|
-| Tonnes of food saved from waste | 2,500+ | `src/data/impactStats.ts` → `sections/about/AboutImpact.tsx` |
-| Farmers & traders supported | 1,200+ | `src/data/impactStats.ts` → `sections/about/AboutImpact.tsx` |
-| Businesses served | 350+ | `src/data/impactStats.ts` → `sections/about/AboutImpact.tsx` |
-| Deliveries completed | 40,000+ | `src/data/impactStats.ts` → `sections/about/AboutImpact.tsx` |
-| Farmers & outlets | **100+** | `sections/home/Hero.tsx` (`heroStats`) |
-| Avoidable loss **target** | 0% | `sections/home/Hero.tsx` |
+| Tonnes of food saved from waste | **0** | `src/data/impactStats.ts` → `sections/about/AboutImpact.tsx` |
+| Farmers supported | **0** | `src/data/impactStats.ts` → `sections/about/AboutImpact.tsx` |
+| Businesses served | **0** | `src/data/impactStats.ts` → `sections/about/AboutImpact.tsx` |
+| Deliveries completed | **0** | `src/data/impactStats.ts` → `sections/about/AboutImpact.tsx` |
+| Avoidable loss **goal** | ~0% (goal) | `sections/home/Hero.tsx` |
 | Telemetry cold monitoring | 24/7 | `sections/home/Hero.tsx` |
 | Quality pipeline steps | 8-Step | `sections/home/Hero.tsx` |
-| Markets across Africa | 54 | `sections/home/InvestorHighlight.tsx` |
+| Farmer traction stat | **removed** | `sections/home/Hero.tsx` |
+| "54 markets" stat | **removed** | `sections/home/InvestorHighlight.tsx` |
+| Total continental food market | $300B+ | `sections/home/InvestorHighlight.tsx` |
 | Connected platform | 1 | `sections/home/InvestorHighlight.tsx` |
+
+> Note: the hero "Live Cold-Hub" panel shows illustrative samples (Route #14, Batch #892,
+> "Updated just now") — review whether this implies operations that haven't happened yet.
 
 ### B. Market & problem sizing (external research required)
 
