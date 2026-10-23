@@ -2,7 +2,7 @@ import { Helmet } from 'react-helmet-async'
 
 const SITE_NAME = 'KeepXtra'
 const SITE_URL = 'https://www.keepxtra.com'
-const DEFAULT_IMAGE = `${SITE_URL}/favicon-512.png`
+const DEFAULT_IMAGE = `${SITE_URL}/images/segments/farmers.jpg`
 
 interface SeoProps {
   /** Page title without the site name — "— KeepXtra" is appended automatically. */

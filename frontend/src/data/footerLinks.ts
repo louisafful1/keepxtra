@@ -25,7 +25,6 @@ export const footerLinkGroups: FooterLinkGroup[] = [
     links: [
       { label: 'Partners', to: '/partners' },
       { label: 'Investor Relations', to: '/investors' },
-      { label: 'Sustainability', to: '/about' },
       { label: 'Contact', to: '/contact' },
     ],
   },
