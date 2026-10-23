@@ -12,7 +12,7 @@ export function ProblemCharts() {
         <SectionHeading
           eyebrow="The Problem"
           title="A market held back by broken infrastructure."
-          description="Four numbers that show why fresh produce logistics in Africa is overdue for investment."
+          description="The structural problems holding back fresh-produce logistics in Africa."
           align="center"
         />
 
@@ -28,18 +28,27 @@ export function ProblemCharts() {
               <Card hover={false} className="flex flex-col gap-4">
                 <div className="flex items-baseline justify-between">
                   <h3 className="font-display text-lg font-medium text-neutral-900">{metric.label}</h3>
-                  <span className="font-display text-3xl font-medium text-primary-700">{metric.value}%</span>
+                  {typeof metric.value === 'number' && (
+                    <span className="font-display text-3xl font-medium text-primary-700">
+                      {metric.value}%
+                    </span>
+                  )}
                 </div>
-                <div className="h-2.5 w-full overflow-hidden rounded-full bg-primary-100">
-                  <motion.div
-                    className="h-full rounded-full bg-primary-500"
-                    initial={{ width: 0 }}
-                    whileInView={{ width: `${metric.value}%` }}
-                    viewport={viewportOnce}
-                    transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
-                  />
-                </div>
+                {typeof metric.value === 'number' && (
+                  <div className="h-2.5 w-full overflow-hidden rounded-full bg-primary-100">
+                    <motion.div
+                      className="h-full rounded-full bg-primary-500"
+                      initial={{ width: 0 }}
+                      whileInView={{ width: `${metric.value}%` }}
+                      viewport={viewportOnce}
+                      transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
+                    />
+                  </div>
+                )}
                 <p className="text-sm leading-relaxed text-neutral-500">{metric.description}</p>
+                {metric.source && (
+                  <p className="text-xs text-neutral-400">Source: {metric.source}</p>
+                )}
               </Card>
             </motion.div>
           ))}

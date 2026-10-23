@@ -67,8 +67,9 @@ export function ProblemStats() {
               </h3>
               <p className="leading-relaxed text-neutral-500">
                 Produce travels for hours in open un-refrigerated trucks, sits in hot
-                open-air markets, and passes through multiple informal middlemen. By the
-                time it reaches buyers, up to 40% has already spoiled.
+                open-air markets, and passes through multiple informal middlemen — so a
+                significant share spoils before it ever reaches a buyer. FAO estimates
+                around 23% of food is lost in sub-Saharan Africa before retail.
               </p>
             </div>
             <ul className="flex flex-col gap-3.5">

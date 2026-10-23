@@ -42,19 +42,33 @@ single source of truth for tracking that.
 > Note: the hero panel is now labelled **"Cold-Hub Preview"** with **"Sample data (illustrative)"**
 > (previously "Live", which implied real operations).
 
-### B. Market & problem sizing (external research required)
+### B. Market & problem sizing (external research)
 
-| Claim | Value shown | Location |
-|---|---|---|
-| Harvested produce lost before buyer | 40% | `src/data/problemMetrics.ts`; also hard-coded in `sections/home/ProblemStats.tsx` |
-| Supply-chain cost lost to logistics | 35% | `src/data/problemMetrics.ts` |
-| Potential farmer income lost | 30% | `src/data/problemMetrics.ts` |
-| Buyers reporting supply shortages | 60% | `src/data/problemMetrics.ts` |
-| Addressable market | $4B+ | `src/data/marketOpportunity.ts` |
-| Food & beverage sector growth | +6%/yr | `src/data/marketOpportunity.ts` |
-| Urban population by 2035 | 68% | `src/data/marketOpportunity.ts` |
-| Population growth by 2050 | ~2x | `src/data/marketOpportunity.ts` |
-| Continental food market | $300B+ | `sections/home/InvestorHighlight.tsx` |
+**Verification status — checked 2026-10-23**
+
+| Claim | Value shown | Verdict | Source / note |
+|---|---|---|---|
+| Produce lost before buyer | 40% | ⚠️ **Overstated vs FAO** | FAO SDG 12.3.1 food-loss (2024): **Sub-Saharan Africa ≈ 23.3%**, **Western Africa ≈ 27.3%**. `40%` is only defensible for a *fresh-produce-specific* study — cite one or lower to ~25–30%. |
+| Supply-chain cost lost to logistics | 35% | ❌ **Unverified** | No primary source found. Source or remove. |
+| Potential farmer income lost | 30% | ❌ **Unverified** | No primary source found. Source or remove. |
+| Buyers reporting supply shortages | 60% | ❌ **Unverified** | Looks like an illustrative survey stat; needs a named survey + methodology. Source or remove. |
+| Fresh-produce market (SAM) | $4B+ | ❌ **Unverified** | Needs a market-sizing report (with methodology) for the defined geography. Source or remove. |
+| Food & beverage sector growth | +6%/yr | ❌ **Unverified** | Needs source (AfDB / World Bank / Euromonitor). |
+| Urban population by 2035 | 68% | ❌ **Unverified** | Check UN World Urbanization Prospects 2025 (Africa); definitions vary (DEGURBA vs national). |
+| Population growth by 2050 | ~2x | ⚠️ **Approximately supported** | UN WPP: Africa ≈ 1.4B (2022) → ≈ 2.5B (2050) ≈ **1.8x** ("nearly double"). Cite WPP edition/year. |
+| Total continental food market (TAM) | $300B+ | ❌ **Unverified** | Needs a cited market report; define scope (all food vs fresh produce). |
+
+**Sources checked:** FAO Food Loss & Waste / SDG 12.3.1 (https://www.fao.org/platform-food-loss-waste/en),
+UN WPP (https://population.un.org/wpp), UN WUP 2025 (https://population.un.org/wup),
+OWID urbanization (https://ourworldindata.org/urbanization). APHLIS returned 401 to automated fetch
+(check manually at https://www.aphlis.net).
+
+**Applied (2026-10-23):**
+- `40%` → **`23%`** (FAO SDG 12.3.1, 2024) with a visible source citation on the card.
+- `35% / 30% / 60%` problem metrics → converted to **qualitative** statements (no fabricated numbers).
+- `$4B / +6%/yr / 68%` market metrics → converted to **qualitative** drivers.
+- `$300B+` removed from the homepage investor panel.
+- `~2x by 2050` kept, cited to UN World Population Prospects.
 
 ### C. Strategy & plan (internal — validate realism/consistency)
 

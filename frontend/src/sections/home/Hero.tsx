@@ -151,7 +151,7 @@ export function Hero() {
                 <span className="flex items-center gap-2.5 text-sm text-neutral-700">
                   <Truck className="size-4 shrink-0 text-primary-600" strokeWidth={1.75} />
                   <span>
-                    Fleet Route #14{' '}
+                     Fleet Route #1{' '}
                     <span className="hidden text-neutral-400 sm:inline">(Kumasi – Accra)</span>
                   </span>
                 </span>
@@ -165,7 +165,7 @@ export function Hero() {
                     className="size-4 shrink-0 text-secondary-600"
                     strokeWidth={1.75}
                   />
-                  Batch #892 Quality Check
+                  Batch #12 Quality Check
                 </span>
                 <span className="shrink-0 text-xs font-medium text-neutral-700">
                   Grade A+ (Passed)

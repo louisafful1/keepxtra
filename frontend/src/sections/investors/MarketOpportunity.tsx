@@ -42,28 +42,35 @@ export function MarketOpportunity() {
           className="mt-14 grid grid-cols-1 gap-6 sm:grid-cols-2"
         >
           {marketOpportunity.map((metric) => {
-            const { linePath, areaPath, lastX, lastY } = buildTrendPaths(metric.trend)
+            const trend = metric.trend ? buildTrendPaths(metric.trend) : null
             return (
               <motion.div key={metric.label} variants={fadeUp}>
                 <Card hover={false} className="flex flex-col gap-1">
                   <p className="text-xs font-medium uppercase tracking-widest text-neutral-400">
                     {metric.label}
                   </p>
-                  <p className="font-display text-3xl font-medium text-primary-800">{metric.value}</p>
+                  {metric.value && (
+                    <p className="font-display text-3xl font-medium text-primary-800">{metric.value}</p>
+                  )}
                   <p className="mt-1 text-sm leading-relaxed text-neutral-500">{metric.description}</p>
-                  <svg viewBox="0 0 100 40" className="mt-4 h-16 w-full text-primary-500" aria-hidden>
-                    <path d={areaPath} fill="currentColor" className="opacity-10" />
-                    <path
-                      d={linePath}
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth={2}
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      vectorEffect="non-scaling-stroke"
-                    />
-                    <circle cx={lastX} cy={lastY} r={3} fill="currentColor" stroke="white" strokeWidth={2} />
-                  </svg>
+                  {metric.source && (
+                    <p className="mt-1 text-xs text-neutral-400">Source: {metric.source}</p>
+                  )}
+                  {trend && (
+                    <svg viewBox="0 0 100 40" className="mt-4 h-16 w-full text-primary-500" aria-hidden>
+                      <path d={trend.areaPath} fill="currentColor" className="opacity-10" />
+                      <path
+                        d={trend.linePath}
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth={2}
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        vectorEffect="non-scaling-stroke"
+                      />
+                      <circle cx={trend.lastX} cy={trend.lastY} r={3} fill="currentColor" stroke="white" strokeWidth={2} />
+                    </svg>
+                  )}
                 </Card>
               </motion.div>
             )

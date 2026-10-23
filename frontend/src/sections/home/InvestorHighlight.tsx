@@ -129,17 +129,6 @@ export function InvestorHighlight() {
                 />
               ))}
             </svg>
-
-            <div className="mt-6 grid grid-cols-2 gap-4 border-t border-neutral-200 pt-6">
-              <div>
-                <p className="font-display text-xl font-medium text-neutral-900">$300B+</p>
-                <p className="text-xs text-neutral-500">Total continental food market</p>
-              </div>
-              <div>
-                <p className="font-display text-xl font-medium text-neutral-900">1</p>
-                <p className="text-xs text-neutral-500">Connected platform</p>
-              </div>
-            </div>
           </motion.div>
         </div>
 
