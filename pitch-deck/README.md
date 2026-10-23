@@ -1,9 +1,14 @@
 # KeepXtra Pitch Deck
 
-Generates `KeepXtra-Pitch-Deck.pdf` — a 15-slide investor deck — from code
+Generates `KeepXtra-Pitch-Deck.pdf` — a 12-slide investor deck — from code
 (`generate-pitch-deck.js`), using [pdfkit](https://pdfkit.org/). There's no
 design file to open; everything (text, numbers, colors, charts) lives in the
 script.
+
+> **Data integrity:** the deck is intentionally conservative — the company is
+> pre-launch, so there are no fabricated traction figures. Statistics carry a
+> visible source (FAO SDG 12.3.1 for food loss; UN World Population Prospects for
+> demographics). Keep it that way when editing.
 
 ## Setup (one-time)
 
