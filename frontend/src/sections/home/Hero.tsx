@@ -7,10 +7,10 @@ import { Button } from '@/components/ui/Button'
 import { Badge } from '@/components/ui/Badge'
 
 const heroStats = [
-  { value: '0%', label: 'Avoidable Loss Target', tone: 'text-primary-700' },
+  { value: '~0%', label: 'Avoidable Loss Goal', tone: 'text-primary-700' },
   { value: '24/7', label: 'Telemetry Cold Monitoring', tone: 'text-secondary-600' },
   { value: '8-Step', label: 'Quality Pipeline', tone: 'text-primary-700' },
-  { value: '100+', label: 'Farmers & Outlets', tone: 'text-neutral-900' },
+  { value: '100+', label: 'Farmers Supported', tone: 'text-neutral-900' },
 ]
 
 export function Hero() {

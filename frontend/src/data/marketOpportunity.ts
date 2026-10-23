@@ -7,9 +7,10 @@ export interface MarketMetric {
 
 export const marketOpportunity: MarketMetric[] = [
   {
-    label: 'Addressable Market',
+    label: 'Fresh-Produce Market',
     value: '$4B+',
-    description: "Annual value flowing through Africa's fresh produce supply chain.",
+    description:
+      "Annual value flowing through Africa's fresh produce supply chain — the serviceable market we address.",
     trend: [30, 45, 60, 80, 100],
   },
   {
