@@ -1,0 +1,14 @@
+{
+  "name": "KeepXtra",
+  "short_name": "KeepXtra",
+  "description": "Cold-chain infrastructure reducing post-harvest food loss across Africa.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#14532D",
+  "icons": [
+    { "src": "/favicon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/favicon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "/favicon-keepxtra.svg", "sizes": "any", "type": "image/svg+xml" }
+  ]
+}

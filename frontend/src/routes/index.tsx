@@ -9,9 +9,7 @@ const ServicesPage = lazy(() => import('@/pages/website/ServicesPage'))
 const PartnersPage = lazy(() => import('@/pages/website/PartnersPage'))
 const InvestorsPage = lazy(() => import('@/pages/website/InvestorsPage'))
 const ContactPage = lazy(() => import('@/pages/website/ContactPage'))
-const BlogPage = lazy(() => import('@/pages/website/BlogPage'))
 const FaqPage = lazy(() => import('@/pages/website/FaqPage'))
-const CareersPage = lazy(() => import('@/pages/website/CareersPage'))
 const NotFoundPage = lazy(() => import('@/pages/website/NotFoundPage'))
 
 function lazyPage(element: ReactNode) {
@@ -29,9 +27,7 @@ export const router = createBrowserRouter([
       { path: 'partners', element: lazyPage(<PartnersPage />) },
       { path: 'investors', element: lazyPage(<InvestorsPage />) },
       { path: 'contact', element: lazyPage(<ContactPage />) },
-      { path: 'blog', element: lazyPage(<BlogPage />) },
       { path: 'faq', element: lazyPage(<FaqPage />) },
-      { path: 'careers', element: lazyPage(<CareersPage />) },
       { path: '*', element: lazyPage(<NotFoundPage />) },
     ],
   },

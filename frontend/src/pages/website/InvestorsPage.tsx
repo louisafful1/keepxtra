@@ -1,5 +1,4 @@
-import { Helmet } from 'react-helmet-async'
-import { buildSeo } from '@/lib/seo'
+import { Seo } from '@/components/Seo'
 import { InvestorsHero } from '@/sections/investors/InvestorsHero'
 import { ProblemCharts } from '@/sections/investors/ProblemCharts'
 import { OurSolutionPillars } from '@/sections/investors/OurSolutionPillars'
@@ -12,18 +11,13 @@ import { InvestorFaqSection } from '@/sections/investors/InvestorFaqSection'
 import { InvestorCta } from '@/sections/investors/InvestorCta'
 
 export default function InvestorsPage() {
-  const seo = buildSeo({
-    title: 'Investor Relations',
-    description:
-      "Market opportunity, business model, growth strategy, and roadmap for KeepXtra's fresh produce logistics infrastructure across Africa.",
-  })
-
   return (
     <>
-      <Helmet>
-        <title>{seo.title}</title>
-        <meta name="description" content={seo.description} />
-      </Helmet>
+      <Seo
+        title="Investor Relations"
+        description="Market opportunity, business model, growth strategy, and roadmap for KeepXtra's fresh produce logistics infrastructure across Africa."
+        path="/investors"
+      />
       <InvestorsHero />
       <ProblemCharts />
       <OurSolutionPillars />

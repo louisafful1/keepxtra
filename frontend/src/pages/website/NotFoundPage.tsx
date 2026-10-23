@@ -1,20 +1,16 @@
-import { Helmet } from 'react-helmet-async'
 import { Container } from '@/components/ui/Container'
 import { Button } from '@/components/ui/Button'
-import { buildSeo } from '@/lib/seo'
+import { Seo } from '@/components/Seo'
 
 export default function NotFoundPage() {
-  const seo = buildSeo({
-    title: 'Page Not Found',
-    description: 'The page you are looking for does not exist.',
-  })
-
   return (
     <>
-      <Helmet>
-        <title>{seo.title}</title>
-        <meta name="description" content={seo.description} />
-      </Helmet>
+      <Seo
+        title="Page Not Found"
+        description="The page you are looking for does not exist."
+        path="/404"
+        noIndex
+      />
       <section className="flex min-h-[70vh] items-center bg-neutral-50 pt-32">
         <Container className="flex flex-col items-center gap-6 text-center">
           <span className="font-display text-8xl font-medium text-neutral-200">404</span>

@@ -8,8 +8,6 @@ export const footerLinkGroups: FooterLinkGroup[] = [
     title: 'Company',
     links: [
       { label: 'About Us', to: '/about' },
-      { label: 'Careers', to: '/careers' },
-      { label: 'Blog', to: '/blog' },
       { label: 'FAQ', to: '/faq' },
     ],
   },
