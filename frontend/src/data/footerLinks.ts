@@ -1,6 +1,8 @@
+import { storeUrl } from './storeInfo'
+
 export interface FooterLinkGroup {
   title: string
-  links: { label: string; to: string }[]
+  links: { label: string; to: string; external?: boolean }[]
 }
 
 export const footerLinkGroups: FooterLinkGroup[] = [
@@ -23,6 +25,7 @@ export const footerLinkGroups: FooterLinkGroup[] = [
   {
     title: 'Resources',
     links: [
+      { label: 'XtraStore', to: storeUrl, external: true },
       { label: 'Partners', to: '/partners' },
       { label: 'Investor Relations', to: '/investors' },
       { label: 'Contact', to: '/contact' },

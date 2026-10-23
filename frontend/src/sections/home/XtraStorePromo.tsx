@@ -1,0 +1,111 @@
+import { motion } from 'framer-motion'
+import { ShoppingBasket, PhoneCall, Truck } from 'lucide-react'
+import { Container } from '@/components/ui/Container'
+import { Button } from '@/components/ui/Button'
+import { ImageSlot } from '@/components/ui/ImageSlot'
+import { staggerContainer, fadeUp, viewportOnce } from '@/animation/variants'
+import { storeName, storeUrl } from '@/data/storeInfo'
+
+const highlights = [
+  {
+    icon: ShoppingBasket,
+    title: 'Retail or bulk',
+    copy: 'A single crate for the kitchen, or wholesale quantities for a restaurant, hotel or store.',
+  },
+  {
+    icon: PhoneCall,
+    title: 'Confirmed with you',
+    copy: 'Our team reviews every order and confirms stock, delivery and payment with a call.',
+  },
+  {
+    icon: Truck,
+    title: 'Delivery arranged',
+    copy: 'We agree the delivery slot and fee with you before dispatch.',
+  },
+]
+
+export function XtraStorePromo() {
+  return (
+    <section className="bg-white py-28">
+      <Container>
+        <div className="overflow-hidden rounded-[2rem] border border-neutral-200 bg-neutral-50 shadow-soft">
+          <div className="grid gap-0 lg:grid-cols-[1.15fr_1fr] lg:items-stretch">
+            <motion.div
+              variants={staggerContainer(0.08)}
+              initial="hidden"
+              whileInView="show"
+              viewport={viewportOnce}
+              className="flex flex-col gap-6 p-8 sm:p-12"
+            >
+              <motion.p
+                variants={fadeUp}
+                className="text-xs font-semibold uppercase tracking-[0.18em] text-secondary-600"
+              >
+                {storeName} — our online store
+              </motion.p>
+
+              <motion.h2
+                variants={fadeUp}
+                className="text-balance text-4xl font-bold leading-[1.08] tracking-[-0.02em] text-neutral-900 sm:text-5xl"
+              >
+                Order KeepXtra produce <span className="text-primary-500">online.</span>
+              </motion.h2>
+
+              <motion.p variants={fadeUp} className="max-w-xl text-lg leading-relaxed text-neutral-500">
+                {storeName} is where our produce meets your kitchen or business. Browse the
+                current range, see live prices and availability, and place an order in a couple
+                of minutes.
+              </motion.p>
+
+              <motion.ul variants={fadeUp} className="mt-2 flex flex-col gap-5">
+                {highlights.map(({ icon: Icon, title, copy }) => (
+                  <li key={title} className="flex items-start gap-4">
+                    <span className="mt-0.5 flex size-10 shrink-0 items-center justify-center rounded-xl border border-primary-100 bg-white text-primary-600 shadow-soft">
+                      <Icon className="size-5" strokeWidth={1.75} />
+                    </span>
+                    <span>
+                      <span className="block text-sm font-semibold text-neutral-900">{title}</span>
+                      <span className="mt-1 block text-sm leading-relaxed text-neutral-500">{copy}</span>
+                    </span>
+                  </li>
+                ))}
+              </motion.ul>
+
+              <motion.div variants={fadeUp} className="mt-4 flex flex-wrap items-center gap-3">
+                <Button to={storeUrl} external variant="primary" size="lg" icon>
+                  Shop on {storeName}
+                </Button>
+                <Button to="/contact" variant="secondary" size="lg">
+                  Talk to our team
+                </Button>
+              </motion.div>
+            </motion.div>
+
+            <motion.div
+              variants={fadeUp}
+              initial="hidden"
+              whileInView="show"
+              viewport={viewportOnce}
+              className="relative flex flex-col justify-center gap-4 border-t border-neutral-200 bg-white p-6 sm:p-8 lg:border-l lg:border-t-0"
+            >
+              <ImageSlot
+                src="/images/segments/households.jpg"
+                alt="Fresh produce from KeepXtra ready for delivery"
+                aspectRatio="portrait"
+                rounded="2xl"
+              />
+              <div className="rounded-2xl border border-neutral-200 bg-neutral-50 p-4">
+                <p className="text-xs font-semibold uppercase tracking-[0.16em] text-neutral-400">
+                  On {storeName}
+                </p>
+                <p className="mt-2 text-sm leading-relaxed text-neutral-600">
+                  Fresh produce · Retail and wholesale · Delivery across Ghana
+                </p>
+              </div>
+            </motion.div>
+          </div>
+        </div>
+      </Container>
+    </section>
+  )
+}

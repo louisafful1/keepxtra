@@ -60,12 +60,23 @@ export function Footer() {
                 <ul className="flex flex-col gap-3">
                   {group.links.map((link) => (
                     <li key={link.label}>
-                      <Link
-                        to={link.to}
-                        className="text-sm text-neutral-600 transition-colors hover:text-neutral-900"
-                      >
-                        {link.label}
-                      </Link>
+                      {link.external ? (
+                        <a
+                          href={link.to}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-sm text-neutral-600 transition-colors hover:text-neutral-900"
+                        >
+                          {link.label}
+                        </a>
+                      ) : (
+                        <Link
+                          to={link.to}
+                          className="text-sm text-neutral-600 transition-colors hover:text-neutral-900"
+                        >
+                          {link.label}
+                        </Link>
+                      )}
                     </li>
                   ))}
                 </ul>

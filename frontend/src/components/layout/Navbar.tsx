@@ -7,6 +7,7 @@ import { navLinks } from '@/data/navLinks'
 import { Logo } from '@/components/layout/Logo'
 import { Button } from '@/components/ui/Button'
 import { MobileMenu } from '@/components/layout/MobileMenu'
+import { storeName, storeUrl } from '@/data/storeInfo'
 
 export function Navbar() {
   const [scrolled, setScrolled] = useState(false)
@@ -55,7 +56,10 @@ export function Navbar() {
             ))}
           </nav>
 
-          <div className="hidden items-center gap-3 lg:flex">    
+          <div className="hidden items-center gap-3 lg:flex">
+            <Button to={storeUrl} external variant="secondary" size="md" icon>
+              Shop {storeName}
+            </Button>
             <Button to="/contact" variant="primary" size="md" icon>
               Request a Delivery
             </Button>

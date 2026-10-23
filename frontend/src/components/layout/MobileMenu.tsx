@@ -6,6 +6,7 @@ import { Logo } from '@/components/layout/Logo'
 import { Button } from '@/components/ui/Button'
 import { cn } from '@/lib/cn'
 import { EASE_OUT } from '@/animation/variants'
+import { storeName, storeUrl } from '@/data/storeInfo'
 
 interface MobileMenuProps {
   onClose: () => void
@@ -66,6 +67,9 @@ export function MobileMenu({ onClose }: MobileMenuProps) {
         </nav>
 
         <div className="mt-auto flex flex-col gap-3 pt-10">
+          <Button to={storeUrl} external variant="secondary" className="w-full justify-center" icon>
+            Shop {storeName}
+          </Button>
           <Button to="/contact" variant="primary" className="w-full justify-center" icon>
             Request a Delivery
           </Button>

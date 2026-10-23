@@ -3,6 +3,7 @@ import { Hero } from '@/sections/home/Hero'
 import { ProblemStats } from '@/sections/home/ProblemStats'
 import { Services } from '@/sections/home/Services'
 import { WhoWeServe } from '@/sections/home/WhoWeServe'
+import { XtraStorePromo } from '@/sections/home/XtraStorePromo'
 import { WhyKeepXtra } from '@/sections/home/WhyKeepXtra'
 import { InvestorHighlight } from '@/sections/home/InvestorHighlight'
 import { Sustainability } from '@/sections/home/Sustainability'
@@ -20,6 +21,7 @@ export default function HomePage() {
       <ProblemStats />
       <Services />
       <WhoWeServe />
+      <XtraStorePromo />
       <WhyKeepXtra />
       <InvestorHighlight />
       <Sustainability />
