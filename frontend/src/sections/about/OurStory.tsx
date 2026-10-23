@@ -43,7 +43,7 @@ export function OurStory() {
 
           <motion.blockquote
             variants={fadeUp}
-            className="border-l-4 border-primary-500 py-1 pl-6 font-display text-2xl font-medium leading-snug text-primary-800"
+            className="border-l-4 border-secondary-500 bg-secondary-500/10 px-6 py-5 font-display text-2xl font-medium leading-snug text-primary-800"
           >
             We&apos;re not just moving produce. We&apos;re building the infrastructure
             Africa&apos;s food system was missing.
