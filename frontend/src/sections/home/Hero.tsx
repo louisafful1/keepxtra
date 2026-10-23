@@ -114,8 +114,8 @@ export function Hero() {
               <div className="flex items-center gap-2.5">
                 <span className="size-2.5 shrink-0 rounded-full bg-primary-500 ring-4 ring-primary-500/15" />
                 <p className="text-sm font-semibold text-neutral-900">
-                  Live Cold-Hub{' '}
-                  <span className="font-normal text-neutral-500">#02 (Accra)</span>
+                  Cold-Hub Preview{' '}
+                  <span className="font-normal text-neutral-500">(Accra)</span>
                 </p>
               </div>
               <span className="rounded-md bg-neutral-100 px-2.5 py-1 text-[11px] font-medium text-neutral-500">
@@ -174,7 +174,7 @@ export function Hero() {
             </div>
 
             <div className="mt-5 flex items-center justify-between border-t border-neutral-100 pt-4">
-              <span className="text-[11px] text-neutral-400">Updated Just now</span>
+              <span className="text-[11px] text-neutral-400">Sample data (illustrative)</span>
               
             </div>
           </div>

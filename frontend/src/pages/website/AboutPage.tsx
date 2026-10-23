@@ -7,7 +7,6 @@ import { VisionSection } from '@/sections/about/VisionSection'
 import { OurValues } from '@/sections/about/OurValues'
 import { HowWeWork } from '@/sections/about/HowWeWork'
 import { MeetTheTeam } from '@/sections/about/MeetTheTeam'
-import { AboutImpact } from '@/sections/about/AboutImpact'
 import { FinalCta } from '@/sections/home/FinalCta'
 
 export default function AboutPage() {
@@ -30,7 +29,6 @@ export default function AboutPage() {
       <OurValues />
       <HowWeWork />
       <MeetTheTeam />
-      <AboutImpact />
       <FinalCta />
     </>
   )

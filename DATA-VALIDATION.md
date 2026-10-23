@@ -26,25 +26,21 @@ single source of truth for tracking that.
 
 ### A. Company traction & capability
 
-> **Baseline (2026-10): company is pre-launch — all traction metrics are set to 0.**
-> Replace with verified operating data once available; never show aspirational numbers as actuals.
+> **Baseline (2026-10): company is pre-launch — the impact/traction section has been
+> removed entirely (no fabricated numbers). Reintroduce only with verified operating data.**
 
-| Claim | Value shown | Location |
+| Claim | Status | Location |
 |---|---|---|
-| Tonnes of food saved from waste | **0** | `src/data/impactStats.ts` → `sections/about/AboutImpact.tsx` |
-| Farmers supported | **0** | `src/data/impactStats.ts` → `sections/about/AboutImpact.tsx` |
-| Businesses served | **0** | `src/data/impactStats.ts` → `sections/about/AboutImpact.tsx` |
-| Deliveries completed | **0** | `src/data/impactStats.ts` → `sections/about/AboutImpact.tsx` |
+| Tonnes / Farmers / Businesses / Deliveries | **removed** | `AboutImpact` section deleted |
 | Avoidable loss **goal** | ~0% (goal) | `sections/home/Hero.tsx` |
 | Telemetry cold monitoring | 24/7 | `sections/home/Hero.tsx` |
 | Quality pipeline steps | 8-Step | `sections/home/Hero.tsx` |
-| Farmer traction stat | **removed** | `sections/home/Hero.tsx` |
 | "54 markets" stat | **removed** | `sections/home/InvestorHighlight.tsx` |
 | Total continental food market | $300B+ | `sections/home/InvestorHighlight.tsx` |
 | Connected platform | 1 | `sections/home/InvestorHighlight.tsx` |
 
-> Note: the hero "Live Cold-Hub" panel shows illustrative samples (Route #14, Batch #892,
-> "Updated just now") — review whether this implies operations that haven't happened yet.
+> Note: the hero panel is now labelled **"Cold-Hub Preview"** with **"Sample data (illustrative)"**
+> (previously "Live", which implied real operations).
 
 ### B. Market & problem sizing (external research required)
 
@@ -83,8 +79,7 @@ single source of truth for tracking that.
 
 ## 3. Inconsistencies — RESOLVED (2026-10-23)
 
-1. ✅ **Farmers count**: canonical figure is **100+**. `impactStats` updated 1,200+ → 100+
-   ("Farmers supported"); Hero relabelled "Farmers Supported".
+1. ✅ **Farmers count / impact stats**: resolved by **removing the impact section entirely** (pre-launch) — no fabricated traction numbers ship.
 2. ✅ **"54 markets"**: removed from the homepage (ambiguous footprint vs. ambition).
 3. ✅ **Market scope**: `$4B+` relabelled **"Fresh-Produce Market"** (serviceable) and `$300B+`
    relabelled **"Total continental food market"** so the two are not conflated.
