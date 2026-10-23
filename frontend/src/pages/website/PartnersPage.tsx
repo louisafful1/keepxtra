@@ -4,8 +4,6 @@ import { PartnersHero } from '@/sections/partners/PartnersHero'
 import { PartnerSegments } from '@/sections/partners/PartnerSegments'
 import { PartnerBenefits } from '@/sections/partners/PartnerBenefits'
 import { PartnershipProcess } from '@/sections/partners/PartnershipProcess'
-import { TrustBar } from '@/sections/home/TrustBar'
-import { Testimonials } from '@/sections/home/Testimonials'
 import { FinalCta } from '@/sections/home/FinalCta'
 
 export default function PartnersPage() {
@@ -24,8 +22,6 @@ export default function PartnersPage() {
       <PartnersHero />
       <PartnerSegments />
       <PartnerBenefits />
-      <TrustBar />
-      <Testimonials />
       <PartnershipProcess />
       <FinalCta />
     </>
