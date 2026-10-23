@@ -1,30 +1,33 @@
-export interface MarketMetric {
+/** A single, citable headline market statistic. */
+export interface MarketStat {
+  value: string
   label: string
-  /** Headline value where we have a citable source; omit for qualitative drivers. */
-  value?: string
-  description: string
-  trend?: number[]
-  source?: string
+  source: string
 }
 
-export const marketOpportunity: MarketMetric[] = [
+/** A qualitative market driver (no fabricated figures). */
+export interface MarketDriver {
+  title: string
+  description: string
+}
+
+export const marketStat: MarketStat = {
+  value: '~2x by 2050',
+  label: "Africa's population is projected to nearly double, driving food demand.",
+  source: 'UN World Population Prospects',
+}
+
+export const marketDrivers: MarketDriver[] = [
   {
-    label: 'Population Growth',
-    value: '~2x by 2050',
-    description: "Africa's population is projected to nearly double, driving food demand.",
-    source: 'UN World Population Prospects',
-    trend: [30, 42, 55, 74, 100],
-  },
-  {
-    label: 'Rising Urban Demand',
+    title: 'Rising Urban Demand',
     description: 'Fast urbanisation concentrates demand for reliable, quality fresh food.',
   },
   {
-    label: 'Cold-Chain Gap',
+    title: 'Cold-Chain Gap',
     description: 'Cold-storage and logistics capacity trail production, so produce spoils before sale.',
   },
   {
-    label: 'Fragmented Supply Chain',
+    title: 'Fragmented Supply Chain',
     description: 'Multiple informal intermediaries add cost and uncertainty to every transaction.',
   },
 ]
