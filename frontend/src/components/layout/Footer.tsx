@@ -4,7 +4,7 @@ import { Container } from '@/components/ui/Container'
 import { Wordmark } from '@/components/layout/Wordmark'
 import { NewsletterForm } from '@/components/layout/NewsletterForm'
 import { footerLinkGroups, socialLinks } from '@/data/footerLinks'
-import { contactEmail, contactNumbers, officeAddress } from '@/data/contactInfo'
+import { contactEmail, ordersEmail, contactNumbers, officeAddress } from '@/data/contactInfo'
 
 export function Footer() {
   return (
@@ -21,11 +21,16 @@ export function Footer() {
               storage to doorstep.
             </p>
             <ul className="flex flex-col gap-2.5 text-sm text-neutral-600">
-              <li className="flex items-center gap-2.5">
-                <Mail className="size-4 shrink-0 text-primary-600" strokeWidth={1.75} />
-                <a href={`mailto:${contactEmail}`} className="transition-colors hover:text-neutral-900">
-                  {contactEmail}
-                </a>
+              <li className="flex items-start gap-2.5">
+                <Mail className="mt-0.5 size-4 shrink-0 text-primary-600" strokeWidth={1.75} />
+                <span className="flex flex-col gap-1">
+                  <a href={`mailto:${contactEmail}`} className="transition-colors hover:text-neutral-900">
+                    {contactEmail}
+                  </a>
+                  <a href={`mailto:${ordersEmail}`} className="transition-colors hover:text-neutral-900">
+                    {ordersEmail}
+                  </a>
+                </span>
               </li>
               <li className="flex items-center gap-2.5">
                 <Phone className="size-4 shrink-0 text-primary-600" strokeWidth={1.75} />

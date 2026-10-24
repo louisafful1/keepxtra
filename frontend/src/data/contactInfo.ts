@@ -1,4 +1,8 @@
+/** General enquiries, partnerships, wholesale and investor contact. */
 export const contactEmail = 'info@keepxtra.com'
+
+/** Existing XtraStore orders: changes, delivery questions and returns. */
+export const ordersEmail = 'order@keepxtra.com'
 
 export const contactNumbers = [
   {

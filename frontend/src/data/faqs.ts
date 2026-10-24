@@ -42,6 +42,6 @@ export const faqs: Faq[] = [
   {
     question: 'How can I contact KeepXtra?',
     answer:
-      'Email info@keepxtra.com, call or WhatsApp +233 59 141 4352 or +233 20 152 5252, or send a message through the contact form.',
+      'Email info@keepxtra.com for general enquiries and partnerships, or order@keepxtra.com for questions about an existing XtraStore order. You can also call or WhatsApp +233 59 141 4352 or +233 20 152 5252, or send a message through the contact form.',
   },
 ]

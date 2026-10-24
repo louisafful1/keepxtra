@@ -4,7 +4,7 @@ import { Container } from '@/components/ui/Container'
 import { Card } from '@/components/ui/Card'
 import { IconTile } from '@/components/ui/IconTile'
 import { staggerContainer, fadeUp, viewportOnce } from '@/animation/variants'
-import { contactEmail, contactNumbers, officeAddress, mapsHref, workingHours } from '@/data/contactInfo'
+import { contactEmail, ordersEmail, contactNumbers, officeAddress, mapsHref, workingHours } from '@/data/contactInfo'
 
 export function ContactInfoGrid() {
   return (
@@ -28,6 +28,14 @@ export function ContactInfoGrid() {
                 >
                   {contactEmail}
                 </a>
+                <p className="mt-1 text-xs text-neutral-500">General enquiries and partnerships</p>
+                <a
+                  href={`mailto:${ordersEmail}`}
+                  className="mt-3 block break-words font-display text-lg font-medium text-neutral-900 transition-colors hover:text-primary-600"
+                >
+                  {ordersEmail}
+                </a>
+                <p className="mt-1 text-xs text-neutral-500">Questions about an XtraStore order</p>
               </div>
             </Card>
           </motion.div>
