@@ -57,6 +57,17 @@ export function XtraStorePromo() {
                 of minutes.
               </motion.p>
 
+              <motion.p
+                variants={fadeUp}
+                className="flex max-w-xl flex-wrap items-center gap-x-2 gap-y-1 rounded-xl border border-primary-100 bg-primary-50/60 px-4 py-3 text-sm leading-relaxed text-neutral-600"
+              >
+                <span className="font-semibold text-primary-800">New — fresh fish:</span>
+                <span>
+                  tilapia listed by species, condition and form, sold by weight, with only
+                  inspected stock available to order.
+                </span>
+              </motion.p>
+
               <motion.ul variants={fadeUp} className="mt-2 flex flex-col gap-4">
                 {highlights.map(({ icon: Icon, title, copy }) => (
                   <li key={title} className="flex items-start gap-3.5">
