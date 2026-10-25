@@ -29,28 +29,9 @@ type Product = {
   image: string
   offer?: boolean
   bulk?: boolean
+  /** Fish products carry a condition note, matching the storefront's fish badge. */
+  chilled?: boolean
 }
-
-const CATALOGUE: Product[] = [
-  {
-    category: 'Tomatoes & Peppers',
-    name: 'Fresh Tomatoes',
-    price: 'GH₵ 18.00',
-    unit: '/ kg',
-    compareAt: 'GH₵ 20.00',
-    image: '/images/store/tomatoes.jpg',
-    offer: true,
-    bulk: true,
-  },
-  {
-    category: 'Tomatoes & Peppers',
-    name: 'Green Bell Peppers',
-    price: 'GH₵ 20.00',
-    unit: '/ kg',
-    image: '/images/store/green-peppers.jpg',
-    bulk: true,
-  },
-]
 
 const OFFERS: Product[] = [
   {
@@ -71,6 +52,45 @@ const OFFERS: Product[] = [
     compareAt: 'GH₵ 18.00',
     image: '/images/store/tomatoes.jpg',
     offer: true,
+  },
+]
+
+const FISH: Product[] = [
+  {
+    category: 'Fresh Fish',
+    name: 'Tilapia',
+    price: 'GH₵ 55.00',
+    unit: '/ kg',
+    image: '/images/store/fish-tilapia.jpg',
+    bulk: true,
+    chilled: true,
+  },
+  {
+    category: 'Fresh Fish',
+    name: 'Catfish',
+    price: 'GH₵ 48.00',
+    unit: '/ kg',
+    image: '/images/store/fish-catfish.jpg',
+    bulk: true,
+    chilled: true,
+  },
+  {
+    category: 'Fresh Fish',
+    name: 'Prawns',
+    price: 'GH₵ 95.00',
+    unit: '/ kg',
+    image: '/images/store/fish-prawns.jpg',
+    bulk: true,
+    chilled: true,
+  },
+  {
+    category: 'Fresh Fish',
+    name: 'Octopus',
+    price: 'GH₵ 85.00',
+    unit: '/ kg',
+    image: '/images/store/fish-octopus.jpg',
+    bulk: true,
+    chilled: true,
   },
 ]
 
@@ -233,7 +253,7 @@ function Header() {
   )
 }
 
-function SearchBar() {
+function SearchBar({ placeholder = 'Search fresh produce…' }: { placeholder?: string }) {
   return (
     <div className="px-[18px] pb-[10px]">
       <div className="flex items-center gap-[7px] rounded-full border border-neutral-200 bg-white py-[6px] pl-[12px] pr-[5px]">
@@ -241,7 +261,7 @@ function SearchBar() {
           <circle cx="11" cy="11" r="6.5" />
           <path d="M16 16l5 5" strokeLinecap="round" />
         </svg>
-        <span className="flex-1 text-[11.5px] text-neutral-400">Search fresh produce…</span>
+        <span className="flex-1 text-[11.5px] text-neutral-400">{placeholder}</span>
         <span className="rounded-full bg-primary-700 px-[11px] py-[4px] text-[10px] font-semibold text-white">
           Search
         </span>
@@ -251,9 +271,14 @@ function SearchBar() {
 }
 
 function Tags({ product }: { product: Product }) {
-  if (!product.offer && !product.bulk) return null
+  if (!product.chilled && !product.offer && !product.bulk) return null
   return (
-    <div className="flex gap-[4px]">
+    <div className="flex flex-wrap gap-[4px]">
+      {product.chilled ? (
+        <span className="rounded-full border border-primary-200 bg-white px-[7px] py-[2px] text-[8px] font-bold uppercase tracking-wide text-primary-700">
+          Chilled fish
+        </span>
+      ) : null}
       {product.offer ? (
         <span className="rounded-full bg-secondary-100 px-[7px] py-[2px] text-[8px] font-bold uppercase tracking-wide text-secondary-700">
           Offer
@@ -355,49 +380,20 @@ function BottomNav() {
   )
 }
 
-function FiltersRow() {
+function FiltersRow({ count = '20', chips = ['Filters', 'Relevance'] }: { count?: string; chips?: string[] }) {
   return (
     <div className="flex items-center justify-between px-[18px] pb-[9px]">
-      <span className="text-[10px] font-medium text-neutral-500">20 products</span>
+      <span className="text-[10px] font-medium text-neutral-500">{count} products</span>
       <div className="flex gap-[6px]">
-        <span className="rounded-full border border-neutral-200 px-[10px] py-[3px] text-[9.5px] font-medium text-neutral-600">
-          Filters
-        </span>
-        <span className="rounded-full border border-neutral-200 px-[10px] py-[3px] text-[9.5px] font-medium text-neutral-600">
-          Relevance
-        </span>
+        {chips.map((chip) => (
+          <span
+            key={chip}
+            className="rounded-full border border-neutral-200 px-[10px] py-[3px] text-[9.5px] font-medium text-neutral-600"
+          >
+            {chip}
+          </span>
+        ))}
       </div>
-    </div>
-  )
-}
-
-function CatalogueScreen() {
-  return (
-    <div className="flex h-full flex-col">
-      <StatusBar />
-      <TopStrip />
-      <Header />
-      <SearchBar />
-      <div className="flex-1 overflow-hidden">
-        <div className="px-[18px] pb-[10px]">
-          <p className="text-[8.5px] font-semibold uppercase tracking-[0.18em] text-primary-600">
-            Catalogue
-          </p>
-          <p className="mt-[4px] font-display text-[24px] font-bold leading-[26px] tracking-[-0.02em] text-neutral-900">
-            Shop fresh produce
-          </p>
-          <p className="mt-[5px] text-[10.5px] leading-[15px] text-neutral-500">
-            Every item shows its unit of sale, price and minimum quantity, with live availability.
-          </p>
-        </div>
-        <FiltersRow />
-        <div className="grid grid-cols-2 gap-[10px] px-[18px]">
-          {CATALOGUE.map((product) => (
-            <ProductCard key={product.name} product={product} />
-          ))}
-        </div>
-      </div>
-      <BottomNav />
     </div>
   )
 }
@@ -443,6 +439,37 @@ function MoreScreen() {
         <div className="grid grid-cols-2 gap-[10px] px-[18px]">
           {MORE.map((product) => (
             <ProductCard key={product.name} product={product} />
+          ))}
+        </div>
+      </div>
+      <BottomNav />
+    </div>
+  )
+}
+
+function FishCatalogueScreen() {
+  return (
+    <div className="flex h-full flex-col">
+      <StatusBar />
+      <TopStrip />
+      <Header />
+      <SearchBar placeholder="Tilapia, catfish, prawns…" />
+      <div className="flex-1 overflow-hidden">
+        <div className="px-[18px] pb-[9px]">
+          <p className="text-[8.5px] font-semibold uppercase tracking-[0.18em] text-primary-600">
+            Fresh fish
+          </p>
+          <p className="mt-[4px] font-display text-[23px] font-bold leading-[25px] tracking-[-0.02em] text-neutral-900">
+            Fresh fish, sold by weight
+          </p>
+          <p className="mt-[5px] text-[10.5px] leading-[15px] text-neutral-500">
+            Only fish from an inspected and released batch is available to order.
+          </p>
+        </div>
+        <FiltersRow count="8" chips={['Species', 'Condition']} />
+        <div className="grid grid-cols-2 gap-[9px] px-[18px]">
+          {FISH.map((product) => (
+            <ProductCard key={product.name} product={product} compact />
           ))}
         </div>
       </div>
@@ -501,7 +528,7 @@ export function XtraStoreMockup() {
           </PhoneFrame>
 
           <PhoneFrame className="z-10">
-            <CatalogueScreen />
+            <FishCatalogueScreen />
           </PhoneFrame>
 
           <PhoneFrame
