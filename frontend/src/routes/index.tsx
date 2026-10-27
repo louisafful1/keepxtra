@@ -1,5 +1,6 @@
 import { lazy, Suspense, type ReactNode } from 'react'
 import { createBrowserRouter } from 'react-router-dom'
+import { MainErrorBoundary } from '@/components/MainErrorBoundary'
 import { WebsiteLayout } from '@/layouts/WebsiteLayout'
 import HomePage from '@/pages/website/HomePage'
 
@@ -20,6 +21,7 @@ export const router = createBrowserRouter([
   {
     path: '/',
     element: <WebsiteLayout />,
+    errorElement: <MainErrorBoundary />,
     children: [
       { index: true, element: <HomePage /> },
       { path: 'about', element: lazyPage(<AboutPage />) },
