@@ -297,6 +297,7 @@ const team = [
   { name: 'Hamilton Maison', role: 'Founder & Chief Executive Officer' },
   { name: 'Louis Afful', role: 'Head of Technology' },
   { name: 'Helena Yaa Kyei', role: 'Business Development' },
+  { name: 'Alice Kafui', role: 'Administration & Human Resources' },
 ]
 
 const useOfFunds = [

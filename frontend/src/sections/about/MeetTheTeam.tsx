@@ -11,7 +11,7 @@ export function MeetTheTeam() {
     <section className="bg-white py-24">
       <Container>
         <SectionHeading
-          eyebrow="Leadership"
+          eyebrow="Our team"
           title="Meet the team."
           description="The people building KeepXtra's infrastructure, day in and day out."
           align="center"
@@ -22,7 +22,7 @@ export function MeetTheTeam() {
           initial="hidden"
           whileInView="show"
           viewport={viewportOnce}
-          className="mt-14 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3"
+          className="mt-14 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4"
         >
           {teamMembers.map((member) => (
             <motion.div key={member.name} variants={fadeUp}>

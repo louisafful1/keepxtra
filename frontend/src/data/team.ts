@@ -30,4 +30,10 @@ export const teamMembers: TeamMember[] = [
     bio: 'Builds partnerships and market access that help farmers store, sell, and earn more from their produce.',
     photo: '/team/Helina.jpeg',
   },
+  {
+    name: 'Alice Kafui',
+    role: 'Administration & Human Resources',
+    bio: 'Coordinates daily operations and people processes so the team has an efficient, supportive workplace to do its best work.',
+    photo: '/team/alice-square.jpg',
+  },
 ]
